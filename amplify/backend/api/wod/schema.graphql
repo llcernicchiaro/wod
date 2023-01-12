@@ -1,0 +1,68 @@
+type MoveVariation @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String
+  moveID: ID! @index(name: "byMove")
+}
+
+type Move @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String
+  variation: String
+  video: AWSURL
+  modality: Modality
+  MoveVariations: [MoveVariation] @hasMany(indexName: "byMove", fields: ["id"])
+}
+
+enum ModalityWeighted {
+  GYMNASTICS
+  MONOSTRUCTURAL
+  WEIGHTLIFTINGLIGHT
+  WEIGHTLIFTINGMEDIUM
+  WEIGHTLIFTINGHEAVY
+}
+
+enum Group {
+  SOLO
+  INPAIRS
+  INTEAMSOF3
+  INTEAMSOF4
+}
+
+enum Scheme {
+  SINGLE
+  COUPLET
+  TRIPLET
+  PLUS4MOVES
+}
+
+enum Priority {
+  TASK
+  TIME
+  WEIGHT
+}
+
+type Movement {
+  repetitions: String
+  weight: String
+  modality: ModalityWeighted
+  time: String
+}
+
+type Wod @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  date: AWSDate
+  movements: [Movement]
+  time: String
+  modalities: [ModalityWeighted]
+  totalReps: Int
+  priority: Priority
+  scheme: Scheme
+  group: Group
+}
+
+enum Modality {
+  GYMNASTICS
+  MONOSTRUCTURAL
+  WEIGHTLIFTING
+}
+ 
