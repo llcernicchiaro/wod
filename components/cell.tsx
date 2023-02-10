@@ -1,32 +1,11 @@
-import {
-  Autocomplete,
-  AutocompleteProps,
-  Container,
-  IconButton,
-  Stack,
-  TextField,
-} from "@mui/material";
-import { Group, Priority } from "../models";
+import { IconButton, TextField } from "@mui/material";
+import { Wod, WorkoutSession } from "../models";
 import EditIcon from "@mui/icons-material/Edit";
 import { Box } from "@mui/system";
-import { FormModal } from "./form-modal";
-import { useState } from "react";
-
-// import { DataStore } from '@aws-amplify/datastore';
-// import { Wod } from './models';
-
-// await DataStore.save(
-//     new Wod({
-// 		"date": "1970-01-01Z",
-// 		"movements": [],
-// 		"time": "Lorem ipsum dolor sit amet",
-// 		"modality": [],
-// 		"totalReps": 1020,
-// 		"priority": Priority.TASK,
-// 		"scheme": Scheme.SINGLE,
-// 		"group": Group.SOLO
-// 	})
-// );
+import { useEffect, useState } from "react";
+import { useDebouncedCallback } from "use-debounce";
+import { DataStore } from "aws-amplify";
+import { format } from "date-fns";
 
 type Header = {
   name: string;
@@ -36,6 +15,8 @@ type Header = {
 };
 
 type Props = {
+  onOpenForm?: (workoutSession: WorkoutSession | undefined, date: Date) => void;
+  workoutSession?: WorkoutSession;
   date: Date;
   stage:
     | "WHITEBOARD"
@@ -46,51 +27,57 @@ type Props = {
     | "COOL-DOWN";
 };
 
-export function Cell({ date, stage }: Props) {
-  const [openForm, setOpenForm] = useState(false);
+const stages = {
+  WHITEBOARD: "whiteboard",
+  "GENERAL WARM-UP": "generalwu",
+  "SPECIFIC WARM-UP": "specificwu",
+  "BREAK AND LOGISTICS": "break",
+  WORKOUT: "workout",
+  "COOL-DOWN": "cooldown",
+};
 
-  const getData = () => {
-    // getDataFromAPI(date, stage);
-  };
+export function Cell({ date, stage, workoutSession, onOpenForm }: Props) {
+  const [text, setText] = useState("");
+
+  useEffect(() => {
+    if (workoutSession) setText(workoutSession[stages[stage]]);
+  }, [stage, workoutSession]);
+
+  const debounced = useDebouncedCallback(async function (value) {
+    setText(value);
+    if (workoutSession) {
+      const result = await DataStore.save(
+        WorkoutSession.copyOf(workoutSession, (updated) => {
+          updated[stages[stage]] = value;
+        })
+      );
+      console.log("Edit ", result);
+    } else {
+      const session = await DataStore.save(
+        new WorkoutSession({
+          [stages[stage]]: value,
+          date: format(date, "yyyy-MM-dd"),
+        })
+      );
+      const wod = await DataStore.save(
+        new Wod({
+          WorkoutSession: session,
+        })
+      );
+
+      const session2 = await DataStore.save(
+        WorkoutSession.copyOf(session, (updated) => {
+          updated.Wod = wod;
+        })
+      );
+      console.log("Create WodSession and Wod", session2, wod);
+    }
+  }, 1000);
 
   const header = {
     duration: 5,
     start: 32,
     end: 37,
-  };
-
-  const content = () => {
-    switch (stage) {
-      case "WHITEBOARD":
-        return "Briefing";
-      case "GENERAL WARM-UP":
-        return "COACH WARM-UP";
-      case "SPECIFIC WARM-UP":
-        return "";
-      case "BREAK AND LOGISTICS":
-        return "Bathroom stop";
-      case "WORKOUT":
-        return (
-          <>
-            IN TEAMS OF 2<br />
-            <br />
-            FOR TIME
-            <br />
-            16 ROUNDS
-            <br />
-            30 DOUBLE UNDERS
-            <br />
-            10 2DB CLEAN AND JERK (22,5/15)
-            <br />
-            <br />
-            *ALTERNATING FULL ROUNDS
-            <br /> CAP: 20
-            <br /> MIN SCORE: TIME
-          </>
-        );
-      case "COOL-DOWN":
-        return "Stretching";
-    }
   };
 
   return (
@@ -116,15 +103,28 @@ export function Cell({ date, stage }: Props) {
         textAlign="left"
         position="relative"
       >
-        <IconButton
-          sx={{ position: "absolute", right: 0, top: 0 }}
-          onClick={() => setOpenForm(true)}
-        >
-          <EditIcon />
-        </IconButton>
-
-        <p style={{ margin: 0 }}>{content()}</p>
-        <FormModal open={openForm} setOpen={setOpenForm} date={date} />
+        {stage === "WORKOUT" ? (
+          <>
+            <IconButton
+              sx={{ position: "absolute", right: 0, top: 0 }}
+              onClick={() => onOpenForm!(workoutSession, date)}
+            >
+              <EditIcon />
+            </IconButton>
+            <p>{text}</p>
+          </>
+        ) : (
+          <TextField
+            multiline
+            minRows={3}
+            defaultValue={text}
+            variant="standard"
+            size="small"
+            placeholder="Click here to start editing"
+            InputProps={{ disableUnderline: true }}
+            onChange={(e) => debounced(e.target.value)}
+          />
+        )}
       </Box>
     </Box>
   );

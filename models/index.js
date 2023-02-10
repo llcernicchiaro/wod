@@ -2,10 +2,14 @@
 import { initSchema } from '@aws-amplify/datastore';
 import { schema } from './schema';
 
-const Modality = {
-  "GYMNASTICS": "GYMNASTICS",
-  "MONOSTRUCTURAL": "MONOSTRUCTURAL",
-  "WEIGHTLIFTING": "WEIGHTLIFTING"
+const WodType = {
+  "FORTIME": "FORTIME",
+  "AMRAP": "AMRAP",
+  "HEAVYDAY": "HEAVYDAY",
+  "ONOFF": "ONOFF",
+  "EVERYXMIN": "EVERYXMIN",
+  "FAMOUS": "FAMOUS",
+  "CUSTOM": "CUSTOM"
 };
 
 const ModalityWeighted = {
@@ -16,11 +20,10 @@ const ModalityWeighted = {
   "WEIGHTLIFTINGHEAVY": "WEIGHTLIFTINGHEAVY"
 };
 
-const Group = {
-  "SOLO": "SOLO",
-  "INPAIRS": "INPAIRS",
-  "INTEAMSOF3": "INTEAMSOF3",
-  "INTEAMSOF4": "INTEAMSOF4"
+const Priority = {
+  "TASK": "TASK",
+  "TIME": "TIME",
+  "WEIGHT": "WEIGHT"
 };
 
 const Scheme = {
@@ -30,22 +33,31 @@ const Scheme = {
   "PLUS4_MOVES": "PLUS4MOVES"
 };
 
-const Priority = {
-  "TASK": "TASK",
-  "TIME": "TIME",
-  "WEIGHT": "WEIGHT"
+const Group = {
+  "SOLO": "SOLO",
+  "INPAIRS": "INPAIRS",
+  "INTEAMSOF3": "INTEAMSOF3",
+  "INTEAMSOF4": "INTEAMSOF4"
 };
 
-const { MoveVariation, Move, Wod, Movement } = initSchema(schema);
+const Modality = {
+  "GYMNASTICS": "GYMNASTICS",
+  "MONOSTRUCTURAL": "MONOSTRUCTURAL",
+  "WEIGHTLIFTING": "WEIGHTLIFTING"
+};
+
+const { WorkoutSession, Wod, MoveVariation, Move, Movement } = initSchema(schema);
 
 export {
+  WorkoutSession,
+  Wod,
   MoveVariation,
   Move,
-  Wod,
-  Modality,
+  WodType,
   ModalityWeighted,
-  Group,
-  Scheme,
   Priority,
+  Scheme,
+  Group,
+  Modality,
   Movement
 };

@@ -1,5 +1,289 @@
 export const schema = {
     "models": {
+        "WorkoutSession": {
+            "name": "WorkoutSession",
+            "fields": {
+                "id": {
+                    "name": "id",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "date": {
+                    "name": "date",
+                    "isArray": false,
+                    "type": "AWSDate",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "Wod": {
+                    "name": "Wod",
+                    "isArray": false,
+                    "type": {
+                        "model": "Wod"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "association": {
+                        "connectionType": "HAS_ONE",
+                        "associatedWith": [
+                            "WorkoutSession"
+                        ],
+                        "targetNames": [
+                            "workoutSessionWodId"
+                        ]
+                    }
+                },
+                "whiteboard": {
+                    "name": "whiteboard",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "generalwu": {
+                    "name": "generalwu",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "specificwu": {
+                    "name": "specificwu",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "break": {
+                    "name": "break",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "cooldown": {
+                    "name": "cooldown",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "workout": {
+                    "name": "workout",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "createdAt": {
+                    "name": "createdAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "updatedAt": {
+                    "name": "updatedAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "workoutSessionWodId": {
+                    "name": "workoutSessionWodId",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": false,
+                    "attributes": []
+                }
+            },
+            "syncable": true,
+            "pluralName": "WorkoutSessions",
+            "attributes": [
+                {
+                    "type": "model",
+                    "properties": {}
+                },
+                {
+                    "type": "auth",
+                    "properties": {
+                        "rules": [
+                            {
+                                "allow": "public",
+                                "operations": [
+                                    "create",
+                                    "update",
+                                    "delete",
+                                    "read"
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "Wod": {
+            "name": "Wod",
+            "fields": {
+                "id": {
+                    "name": "id",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "movements": {
+                    "name": "movements",
+                    "isArray": true,
+                    "type": {
+                        "nonModel": "Movement"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true
+                },
+                "time": {
+                    "name": "time",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "modalities": {
+                    "name": "modalities",
+                    "isArray": true,
+                    "type": {
+                        "enum": "ModalityWeighted"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true
+                },
+                "totalReps": {
+                    "name": "totalReps",
+                    "isArray": false,
+                    "type": "Int",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "priority": {
+                    "name": "priority",
+                    "isArray": false,
+                    "type": {
+                        "enum": "Priority"
+                    },
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "scheme": {
+                    "name": "scheme",
+                    "isArray": false,
+                    "type": {
+                        "enum": "Scheme"
+                    },
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "group": {
+                    "name": "group",
+                    "isArray": false,
+                    "type": {
+                        "enum": "Group"
+                    },
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "type": {
+                    "name": "type",
+                    "isArray": false,
+                    "type": {
+                        "enum": "WodType"
+                    },
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "rounds": {
+                    "name": "rounds",
+                    "isArray": false,
+                    "type": "Int",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "WorkoutSession": {
+                    "name": "WorkoutSession",
+                    "isArray": false,
+                    "type": {
+                        "model": "WorkoutSession"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "association": {
+                        "connectionType": "BELONGS_TO",
+                        "targetNames": [
+                            "wodWorkoutSessionId"
+                        ]
+                    }
+                },
+                "comment": {
+                    "name": "comment",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "createdAt": {
+                    "name": "createdAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "updatedAt": {
+                    "name": "updatedAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "wodWorkoutSessionId": {
+                    "name": "wodWorkoutSessionId",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": false,
+                    "attributes": []
+                }
+            },
+            "syncable": true,
+            "pluralName": "Wods",
+            "attributes": [
+                {
+                    "type": "model",
+                    "properties": {}
+                },
+                {
+                    "type": "auth",
+                    "properties": {
+                        "rules": [
+                            {
+                                "allow": "public",
+                                "operations": [
+                                    "create",
+                                    "update",
+                                    "delete",
+                                    "read"
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
         "MoveVariation": {
             "name": "MoveVariation",
             "fields": {
@@ -92,13 +376,6 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
-                "variation": {
-                    "name": "variation",
-                    "isArray": false,
-                    "type": "String",
-                    "isRequired": false,
-                    "attributes": []
-                },
                 "video": {
                     "name": "video",
                     "isArray": false,
@@ -172,135 +449,19 @@ export const schema = {
                     }
                 }
             ]
-        },
-        "Wod": {
-            "name": "Wod",
-            "fields": {
-                "id": {
-                    "name": "id",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "date": {
-                    "name": "date",
-                    "isArray": false,
-                    "type": "AWSDate",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "movements": {
-                    "name": "movements",
-                    "isArray": true,
-                    "type": {
-                        "nonModel": "Movement"
-                    },
-                    "isRequired": false,
-                    "attributes": [],
-                    "isArrayNullable": true
-                },
-                "time": {
-                    "name": "time",
-                    "isArray": false,
-                    "type": "String",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "modalities": {
-                    "name": "modalities",
-                    "isArray": true,
-                    "type": {
-                        "enum": "ModalityWeighted"
-                    },
-                    "isRequired": false,
-                    "attributes": [],
-                    "isArrayNullable": true
-                },
-                "totalReps": {
-                    "name": "totalReps",
-                    "isArray": false,
-                    "type": "Int",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "priority": {
-                    "name": "priority",
-                    "isArray": false,
-                    "type": {
-                        "enum": "Priority"
-                    },
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "scheme": {
-                    "name": "scheme",
-                    "isArray": false,
-                    "type": {
-                        "enum": "Scheme"
-                    },
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "group": {
-                    "name": "group",
-                    "isArray": false,
-                    "type": {
-                        "enum": "Group"
-                    },
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "createdAt": {
-                    "name": "createdAt",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
-                },
-                "updatedAt": {
-                    "name": "updatedAt",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
-                }
-            },
-            "syncable": true,
-            "pluralName": "Wods",
-            "attributes": [
-                {
-                    "type": "model",
-                    "properties": {}
-                },
-                {
-                    "type": "auth",
-                    "properties": {
-                        "rules": [
-                            {
-                                "allow": "public",
-                                "operations": [
-                                    "create",
-                                    "update",
-                                    "delete",
-                                    "read"
-                                ]
-                            }
-                        ]
-                    }
-                }
-            ]
         }
     },
     "enums": {
-        "Modality": {
-            "name": "Modality",
+        "WodType": {
+            "name": "WodType",
             "values": [
-                "GYMNASTICS",
-                "MONOSTRUCTURAL",
-                "WEIGHTLIFTING"
+                "FORTIME",
+                "AMRAP",
+                "HEAVYDAY",
+                "ONOFF",
+                "EVERYXMIN",
+                "FAMOUS",
+                "CUSTOM"
             ]
         },
         "ModalityWeighted": {
@@ -313,13 +474,12 @@ export const schema = {
                 "WEIGHTLIFTINGHEAVY"
             ]
         },
-        "Group": {
-            "name": "Group",
+        "Priority": {
+            "name": "Priority",
             "values": [
-                "SOLO",
-                "INPAIRS",
-                "INTEAMSOF3",
-                "INTEAMSOF4"
+                "TASK",
+                "TIME",
+                "WEIGHT"
             ]
         },
         "Scheme": {
@@ -331,12 +491,21 @@ export const schema = {
                 "PLUS4MOVES"
             ]
         },
-        "Priority": {
-            "name": "Priority",
+        "Group": {
+            "name": "Group",
             "values": [
-                "TASK",
-                "TIME",
-                "WEIGHT"
+                "SOLO",
+                "INPAIRS",
+                "INTEAMSOF3",
+                "INTEAMSOF4"
+            ]
+        },
+        "Modality": {
+            "name": "Modality",
+            "values": [
+                "GYMNASTICS",
+                "MONOSTRUCTURAL",
+                "WEIGHTLIFTING"
             ]
         }
     },
@@ -373,10 +542,24 @@ export const schema = {
                     "type": "String",
                     "isRequired": false,
                     "attributes": []
+                },
+                "moveId": {
+                    "name": "moveId",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "variationId": {
+                    "name": "variationId",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": false,
+                    "attributes": []
                 }
             }
         }
     },
     "codegenVersion": "3.3.2",
-    "version": "7e5070a622f3151adbb431c8b48701dc"
+    "version": "655226d93a67b7ce9b3cf11a8dbc4f52"
 };

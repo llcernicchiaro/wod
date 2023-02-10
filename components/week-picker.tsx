@@ -64,7 +64,7 @@ export default function WeekPicker({ date, setDate }: WeekPickerProps) {
   };
 
   const goToPreviousWeek = () => {
-    setDate(sub(start, { days: 1 }));
+    setDate(sub(start, { days: 7 }));
   };
 
   const renderWeekPickerDay = (
@@ -98,7 +98,7 @@ export default function WeekPicker({ date, setDate }: WeekPickerProps) {
       </IconButton>
       <DatePicker
         value={date}
-        onChange={(newValue) => setDate(newValue!)}
+        onChange={(newValue) => setDate(startOfWeek(newValue!))}
         renderDay={renderWeekPickerDay}
         renderInput={(params) => <TextField {...params} size="small" />}
         inputFormat={`'Week ${getWeek(date)}:' ${format(

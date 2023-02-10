@@ -1,3 +1,25 @@
+enum WodType {
+  FORTIME
+  AMRAP
+  HEAVYDAY
+  ONOFF
+  EVERYXMIN
+  FAMOUS
+  CUSTOM
+}
+
+type WorkoutSession @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  date: AWSDate
+  Wod: Wod @hasOne
+  whiteboard: String
+  generalwu: String
+  specificwu: String
+  break: String
+  cooldown: String
+  workout: String
+}
+
 type MoveVariation @model @auth(rules: [{allow: public}]) {
   id: ID!
   name: String
@@ -7,7 +29,6 @@ type MoveVariation @model @auth(rules: [{allow: public}]) {
 type Move @model @auth(rules: [{allow: public}]) {
   id: ID!
   name: String
-  variation: String
   video: AWSURL
   modality: Modality
   MoveVariations: [MoveVariation] @hasMany(indexName: "byMove", fields: ["id"])
@@ -46,11 +67,12 @@ type Movement {
   weight: String
   modality: ModalityWeighted
   time: String
+  moveId: ID
+  variationId: ID
 }
 
 type Wod @model @auth(rules: [{allow: public}]) {
   id: ID!
-  date: AWSDate
   movements: [Movement]
   time: String
   modalities: [ModalityWeighted]
@@ -58,6 +80,10 @@ type Wod @model @auth(rules: [{allow: public}]) {
   priority: Priority
   scheme: Scheme
   group: Group
+  type: WodType
+  rounds: Int
+  WorkoutSession: WorkoutSession @belongsTo
+  comment: String
 }
 
 enum Modality {

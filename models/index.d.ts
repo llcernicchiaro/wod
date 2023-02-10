@@ -1,11 +1,15 @@
 import { ModelInit, MutableModel, __modelMeta__, ManagedIdentifier } from "@aws-amplify/datastore";
 // @ts-ignore
-import { LazyLoading, LazyLoadingDisabled, AsyncCollection } from "@aws-amplify/datastore";
+import { LazyLoading, LazyLoadingDisabled, AsyncItem, AsyncCollection } from "@aws-amplify/datastore";
 
-export enum Modality {
-  GYMNASTICS = "GYMNASTICS",
-  MONOSTRUCTURAL = "MONOSTRUCTURAL",
-  WEIGHTLIFTING = "WEIGHTLIFTING"
+export enum WodType {
+  FORTIME = "FORTIME",
+  AMRAP = "AMRAP",
+  HEAVYDAY = "HEAVYDAY",
+  ONOFF = "ONOFF",
+  EVERYXMIN = "EVERYXMIN",
+  FAMOUS = "FAMOUS",
+  CUSTOM = "CUSTOM"
 }
 
 export enum ModalityWeighted {
@@ -16,11 +20,10 @@ export enum ModalityWeighted {
   WEIGHTLIFTINGHEAVY = "WEIGHTLIFTINGHEAVY"
 }
 
-export enum Group {
-  SOLO = "SOLO",
-  INPAIRS = "INPAIRS",
-  INTEAMSOF3 = "INTEAMSOF3",
-  INTEAMSOF4 = "INTEAMSOF4"
+export enum Priority {
+  TASK = "TASK",
+  TIME = "TIME",
+  WEIGHT = "WEIGHT"
 }
 
 export enum Scheme {
@@ -30,10 +33,17 @@ export enum Scheme {
   PLUS4_MOVES = "PLUS4MOVES"
 }
 
-export enum Priority {
-  TASK = "TASK",
-  TIME = "TIME",
-  WEIGHT = "WEIGHT"
+export enum Group {
+  SOLO = "SOLO",
+  INPAIRS = "INPAIRS",
+  INTEAMSOF3 = "INTEAMSOF3",
+  INTEAMSOF4 = "INTEAMSOF4"
+}
+
+export enum Modality {
+  GYMNASTICS = "GYMNASTICS",
+  MONOSTRUCTURAL = "MONOSTRUCTURAL",
+  WEIGHTLIFTING = "WEIGHTLIFTING"
 }
 
 type EagerMovement = {
@@ -41,6 +51,8 @@ type EagerMovement = {
   readonly weight?: string | null;
   readonly modality?: ModalityWeighted | keyof typeof ModalityWeighted | null;
   readonly time?: string | null;
+  readonly moveId?: string | null;
+  readonly variationId?: string | null;
 }
 
 type LazyMovement = {
@@ -48,11 +60,107 @@ type LazyMovement = {
   readonly weight?: string | null;
   readonly modality?: ModalityWeighted | keyof typeof ModalityWeighted | null;
   readonly time?: string | null;
+  readonly moveId?: string | null;
+  readonly variationId?: string | null;
 }
 
 export declare type Movement = LazyLoading extends LazyLoadingDisabled ? EagerMovement : LazyMovement
 
 export declare const Movement: (new (init: ModelInit<Movement>) => Movement)
+
+type EagerWorkoutSession = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<WorkoutSession, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly date?: string | null;
+  readonly Wod?: Wod | null;
+  readonly whiteboard?: string | null;
+  readonly generalwu?: string | null;
+  readonly specificwu?: string | null;
+  readonly break?: string | null;
+  readonly cooldown?: string | null;
+  readonly workout?: string | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+  readonly workoutSessionWodId?: string | null;
+}
+
+type LazyWorkoutSession = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<WorkoutSession, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly date?: string | null;
+  readonly Wod: AsyncItem<Wod | undefined>;
+  readonly whiteboard?: string | null;
+  readonly generalwu?: string | null;
+  readonly specificwu?: string | null;
+  readonly break?: string | null;
+  readonly cooldown?: string | null;
+  readonly workout?: string | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+  readonly workoutSessionWodId?: string | null;
+}
+
+export declare type WorkoutSession = LazyLoading extends LazyLoadingDisabled ? EagerWorkoutSession : LazyWorkoutSession
+
+export declare const WorkoutSession: (new (init: ModelInit<WorkoutSession>) => WorkoutSession) & {
+  copyOf(source: WorkoutSession, mutator: (draft: MutableModel<WorkoutSession>) => MutableModel<WorkoutSession> | void): WorkoutSession;
+}
+
+type EagerWod = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Wod, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly movements?: (Movement | null)[] | null;
+  readonly time?: string | null;
+  readonly modalities?: (ModalityWeighted | null)[] | keyof typeof ModalityWeighted | null;
+  readonly totalReps?: number | null;
+  readonly priority?: Priority | keyof typeof Priority | null;
+  readonly scheme?: Scheme | keyof typeof Scheme | null;
+  readonly group?: Group | keyof typeof Group | null;
+  readonly type?: WodType | keyof typeof WodType | null;
+  readonly rounds?: number | null;
+  readonly WorkoutSession?: WorkoutSession | null;
+  readonly comment?: string | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+  readonly wodWorkoutSessionId?: string | null;
+}
+
+type LazyWod = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Wod, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly movements?: (Movement | null)[] | null;
+  readonly time?: string | null;
+  readonly modalities?: (ModalityWeighted | null)[] | keyof typeof ModalityWeighted | null;
+  readonly totalReps?: number | null;
+  readonly priority?: Priority | keyof typeof Priority | null;
+  readonly scheme?: Scheme | keyof typeof Scheme | null;
+  readonly group?: Group | keyof typeof Group | null;
+  readonly type?: WodType | keyof typeof WodType | null;
+  readonly rounds?: number | null;
+  readonly WorkoutSession: AsyncItem<WorkoutSession | undefined>;
+  readonly comment?: string | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+  readonly wodWorkoutSessionId?: string | null;
+}
+
+export declare type Wod = LazyLoading extends LazyLoadingDisabled ? EagerWod : LazyWod
+
+export declare const Wod: (new (init: ModelInit<Wod>) => Wod) & {
+  copyOf(source: Wod, mutator: (draft: MutableModel<Wod>) => MutableModel<Wod> | void): Wod;
+}
 
 type EagerMoveVariation = {
   readonly [__modelMeta__]: {
@@ -91,7 +199,6 @@ type EagerMove = {
   };
   readonly id: string;
   readonly name?: string | null;
-  readonly variation?: string | null;
   readonly video?: string | null;
   readonly modality?: Modality | keyof typeof Modality | null;
   readonly MoveVariations?: (MoveVariation | null)[] | null;
@@ -106,7 +213,6 @@ type LazyMove = {
   };
   readonly id: string;
   readonly name?: string | null;
-  readonly variation?: string | null;
   readonly video?: string | null;
   readonly modality?: Modality | keyof typeof Modality | null;
   readonly MoveVariations: AsyncCollection<MoveVariation>;
@@ -118,46 +224,4 @@ export declare type Move = LazyLoading extends LazyLoadingDisabled ? EagerMove :
 
 export declare const Move: (new (init: ModelInit<Move>) => Move) & {
   copyOf(source: Move, mutator: (draft: MutableModel<Move>) => MutableModel<Move> | void): Move;
-}
-
-type EagerWod = {
-  readonly [__modelMeta__]: {
-    identifier: ManagedIdentifier<Wod, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
-  };
-  readonly id: string;
-  readonly date?: string | null;
-  readonly movements?: (Movement | null)[] | null;
-  readonly time?: string | null;
-  readonly modalities?: (ModalityWeighted | null)[] | keyof typeof ModalityWeighted | null;
-  readonly totalReps?: number | null;
-  readonly priority?: Priority | keyof typeof Priority | null;
-  readonly scheme?: Scheme | keyof typeof Scheme | null;
-  readonly group?: Group | keyof typeof Group | null;
-  readonly createdAt?: string | null;
-  readonly updatedAt?: string | null;
-}
-
-type LazyWod = {
-  readonly [__modelMeta__]: {
-    identifier: ManagedIdentifier<Wod, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
-  };
-  readonly id: string;
-  readonly date?: string | null;
-  readonly movements?: (Movement | null)[] | null;
-  readonly time?: string | null;
-  readonly modalities?: (ModalityWeighted | null)[] | keyof typeof ModalityWeighted | null;
-  readonly totalReps?: number | null;
-  readonly priority?: Priority | keyof typeof Priority | null;
-  readonly scheme?: Scheme | keyof typeof Scheme | null;
-  readonly group?: Group | keyof typeof Group | null;
-  readonly createdAt?: string | null;
-  readonly updatedAt?: string | null;
-}
-
-export declare type Wod = LazyLoading extends LazyLoadingDisabled ? EagerWod : LazyWod
-
-export declare const Wod: (new (init: ModelInit<Wod>) => Wod) & {
-  copyOf(source: Wod, mutator: (draft: MutableModel<Wod>) => MutableModel<Wod> | void): Wod;
 }
