@@ -556,10 +556,24 @@ export const schema = {
                     "type": "ID",
                     "isRequired": false,
                     "attributes": []
+                },
+                "menWeight": {
+                    "name": "menWeight",
+                    "isArray": false,
+                    "type": "Float",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "womenWeight": {
+                    "name": "womenWeight",
+                    "isArray": false,
+                    "type": "Float",
+                    "isRequired": false,
+                    "attributes": []
                 }
             }
         }
     },
     "codegenVersion": "3.3.2",
-    "version": "655226d93a67b7ce9b3cf11a8dbc4f52"
+    "version": "9e3a899d8410c55528d5487a5e361f39"
 };

@@ -69,6 +69,8 @@ type Movement {
   time: String
   moveId: ID
   variationId: ID
+  menWeight: Float
+  womenWeight: Float
 }
 
 type Wod @model @auth(rules: [{allow: public}]) {

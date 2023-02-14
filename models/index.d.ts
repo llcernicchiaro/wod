@@ -53,6 +53,8 @@ type EagerMovement = {
   readonly time?: string | null;
   readonly moveId?: string | null;
   readonly variationId?: string | null;
+  readonly menWeight?: number | null;
+  readonly womenWeight?: number | null;
 }
 
 type LazyMovement = {
@@ -62,6 +64,8 @@ type LazyMovement = {
   readonly time?: string | null;
   readonly moveId?: string | null;
   readonly variationId?: string | null;
+  readonly menWeight?: number | null;
+  readonly womenWeight?: number | null;
 }
 
 export declare type Movement = LazyLoading extends LazyLoadingDisabled ? EagerMovement : LazyMovement

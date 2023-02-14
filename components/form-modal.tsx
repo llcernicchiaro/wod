@@ -24,9 +24,11 @@ import {
   Move,
   Priority,
   Wod,
+  WodType,
   WorkoutSession,
 } from "../models";
-import { DataStore } from "aws-amplify";
+import { DataStore, Predicates, SortDirection } from "aws-amplify";
+import { MoveSelect } from "./move-select";
 
 type Props = {
   open: boolean;
@@ -42,14 +44,9 @@ type TabPanelProps = {
   value: number;
 };
 
-type Movement = {
-  reps: number;
-  name: string;
-};
-
 type ForTimeForm = {
   rounds?: number;
-  moves?: Movement[];
+  moves?: LazyMovement[];
   priority?: "TASK";
 };
 
@@ -99,32 +96,52 @@ const CustomAutocomplete = (props: any) => (
   />
 );
 
+const groupsText = {
+  [Group.SOLO]: "SOLO",
+  [Group.INPAIRS]: "IN PAIRS",
+  [Group.INTEAMSOF3]: "IN TEAMS OF 3",
+  [Group.INTEAMSOF4]: "IN TEAMS OF 4",
+};
+
+const wodTypeText = {
+  [WodType.FORTIME]: "FOR TIME",
+  [WodType.AMRAP]: "AMRAP",
+  [WodType.HEAVYDAY]: "HEAVY DAY",
+  [WodType.ONOFF]: "TIME ON/TIME OFF",
+  [WodType.EVERYXMIN]: "EVERY X TIME",
+  [WodType.FAMOUS]: "FAMOUS(GIRLS, HEROES, OPEN, ETC)",
+  [WodType.CUSTOM]: "CUSTOM",
+};
+
 export function FormModal({ date, open, setOpen, wod, onClose }: Props) {
   const [tab, setTab] = useState(0);
-  const [movesOptions, setMovesOptions] = useState<LazyMove[]>([]);
-  const [wodMoves, setWodMoves] = useState<LazyMovement[]>([]);
+  const [moveOptions, setMoveOptions] = useState<LazyMove[]>([]);
+  const [wodMoves, setWodMoves] = useState<LazyMovement[]>([
+    { repetitions: "", moveId: "" },
+  ]);
   const [rounds, setRounds] = useState(1);
   const [comment, setComment] = useState("");
   const [group, setGroup] = useState<keyof typeof Group>("SOLO");
-  const [movements, setMovements] = useState([{ reps: "", name: "" }]);
-  const groupsText = {
-    [Group.SOLO]: "",
-    [Group.INPAIRS]: "IN PAIRS",
-    [Group.INTEAMSOF3]: "IN TEAMS OF 3",
-    [Group.INTEAMSOF4]: "IN TEAMS OF 4",
-  };
+  const [timeCap, setTimeCap] = useState("");
 
   useEffect(() => {
     setRounds(wod.rounds || 1);
     setGroup(wod.group || "SOLO");
     setComment(wod.comment || "");
+    setTimeCap(wod.time || "");
+    setWodMoves(
+      (wod.movements as LazyMovement[]) || [{ repetitions: "", moveId: "" }]
+    );
   }, [wod]);
 
   useEffect(() => {
     const getMovements = async () => {
-      const moves = await DataStore.query(Move);
+      const moves = await DataStore.query(Move, Predicates.ALL, {
+        sort: (s) =>
+          s.modality(SortDirection.ASCENDING).name(SortDirection.ASCENDING),
+      });
       console.log(moves);
-      if (!!moves) setMovesOptions(moves);
+      if (!!moves) setMoveOptions(moves);
     };
 
     getMovements();
@@ -150,6 +167,21 @@ export function FormModal({ date, open, setOpen, wod, onClose }: Props) {
     setOpen(false);
   };
 
+  const onChangeMove = (value: LazyMove | string, field: string, i: number) => {
+    const newWodMoves = wodMoves.map((move, index) => {
+      if (index === i) {
+        if (field === "moveId") {
+          const { id, modality } = value as LazyMove;
+          const weightedModality: any =
+            modality === "WEIGHTLIFTING" ? "WEIGHTLIFTINGLIGHT" : modality;
+          return { ...move, moveId: id, modality: weightedModality };
+        }
+        return { ...move, [field]: value };
+      } else return move;
+    });
+    setWodMoves(newWodMoves);
+  };
+
   return (
     <Dialog
       open={open}
@@ -162,11 +194,9 @@ export function FormModal({ date, open, setOpen, wod, onClose }: Props) {
         WOD - {format(date, "EEEE - dd/MM")}
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           <Tabs value={tab} onChange={(_e, newValue) => setTab(newValue)}>
-            <Tab label="For Time" />
-            <Tab label="AMRAP" />
-            <Tab label="Heavy Day" />
-            <Tab label="Time ON / Time OFF" />
-            <Tab label="Famous (Girls, Heroes, Open, etc)" />
+            {Object.values(wodTypeText).map((type) => (
+              <Tab label={type} key={type} />
+            ))}
           </Tabs>
         </Box>
         <TabPanel value={tab} index={0}>
@@ -182,40 +212,28 @@ export function FormModal({ date, open, setOpen, wod, onClose }: Props) {
             }}
             sx={{ width: 80 }}
             value={rounds}
-            onChange={(e) => setRounds(e.target.value)}
+            onChange={(e) => setRounds(Number(e.target.value))}
           />
 
-          {movements.map((p, index) => (
-            <Stack spacing={2} direction="row" key={index} width="100%">
-              <TextField
-                variant="standard"
-                size="small"
-                type="number"
-                placeholder="Reps"
-                inputProps={{
-                  inputMode: "numeric",
-                  pattern: "[0-9]*",
-                }}
-                sx={{ width: 80 }}
-              />
-              <CustomAutocomplete
-                options={movesOptions}
-                placeholder="Movement"
-                sx={{ width: "100%" }}
-                getOptionLabel={(option) => option.name}
-              />
-            </Stack>
+          {wodMoves.map((move, index) => (
+            <MoveSelect
+              key={index}
+              move={move}
+              moves={moveOptions}
+              onChangeMove={onChangeMove}
+              index={index}
+            />
           ))}
 
           <Button
             type="button"
             variant="outlined"
             onClick={() =>
-              setMovements([
-                ...movements,
+              setWodMoves([
+                ...wodMoves,
                 {
-                  reps: "",
-                  name: "",
+                  repetitions: "",
+                  moveId: "",
                 },
               ])
             }
@@ -225,17 +243,26 @@ export function FormModal({ date, open, setOpen, wod, onClose }: Props) {
 
           <Stack spacing={2}>
             <CustomAutocomplete
-              options={Object.values(Group)}
+              options={Object.values(groupsText)}
               placeholder="Group"
               defaultValue="SOLO"
               label="Group"
               onChange={(_e, newValue) => setGroup(newValue)}
             />
 
-            <CustomAutocomplete
-              options={Object.values(Group)}
+            <TextField
+              variant="standard"
+              size="small"
+              type="number"
               placeholder="Time Cap"
               label="Time Cap"
+              inputProps={{
+                inputMode: "numeric",
+                pattern: "[0-9]*",
+              }}
+              sx={{ width: 80 }}
+              value={timeCap}
+              onChange={(e) => setTimeCap(e.target.value)}
             />
 
             <TextField
