@@ -71,6 +71,7 @@ type Movement {
   variationId: ID
   menWeight: Float
   womenWeight: Float
+  sequence: [String]
 }
 
 type Wod @model @auth(rules: [{allow: public}]) {
@@ -86,6 +87,7 @@ type Wod @model @auth(rules: [{allow: public}]) {
   rounds: Int
   WorkoutSession: WorkoutSession @belongsTo
   comment: String
+  isSequence: Boolean
 }
 
 enum Modality {

@@ -111,7 +111,7 @@ export function Cell({ date, stage, workoutSession, onOpenForm }: Props) {
             >
               <EditIcon />
             </IconButton>
-            <p>{text}</p>
+            <p style={{ whiteSpace: "pre-line" }}>{text}</p>
           </>
         ) : (
           <TextField

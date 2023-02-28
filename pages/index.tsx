@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { add, format, startOfWeek } from "date-fns";
+import React, { useCallback, useEffect, useState } from 'react';
+import { add, endOfWeek, format, startOfWeek } from 'date-fns';
 import {
   Box,
   Table,
@@ -7,19 +7,45 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TableRow,
-} from "@mui/material";
-import WeekPicker from "../components/week-picker";
-import { Modality, ModalityWeighted, Move } from "../models";
-import { DataStore, API, graphqlOperation } from "aws-amplify";
+  TableRow
+} from '@mui/material';
+import WeekPicker from '../components/week-picker';
+import {
+  Modality,
+  ModalityWeighted,
+  Move,
+  Wod,
+  WorkoutSession
+} from '../models';
+import { DataStore, API, graphqlOperation } from 'aws-amplify';
 
 type Column = {
-  id: "name" | "code" | "population" | "size" | "density" | string;
+  id: 'name' | 'code' | 'population' | 'size' | 'density' | string;
   label: string;
   minWidth?: number;
-  align?: "right";
+  align?: 'right';
   colSpan?: number;
 };
+
+type Props = {
+  categories: {
+    id: number;
+    group: string;
+    name: string;
+    groupSize?: number;
+  }[];
+};
+
+function getDates(startDate: Date, stopDate: Date) {
+  const dateArray = new Array<Date>();
+  let currentDate = startDate;
+  while (currentDate <= stopDate) {
+    dateArray.push(new Date(currentDate));
+    currentDate = add(currentDate, { days: 1 });
+  }
+
+  return dateArray;
+}
 
 export async function getServerSideProps() {
   // Fetch data from external API
@@ -27,159 +53,195 @@ export async function getServerSideProps() {
   // const data = await res.json();
 
   const gymnastics = await DataStore.query(Move, (m) =>
-    m.modality.eq("GYMNASTICS")
+    m.modality.eq('GYMNASTICS')
   );
   const weightlifting = await DataStore.query(Move, (m) =>
-    m.modality.eq("WEIGHTLIFTING")
+    m.modality.eq('WEIGHTLIFTING')
   );
   const monostructural = await DataStore.query(Move, (m) =>
-    m.modality.eq("MONOSTRUCTURAL")
+    m.modality.eq('MONOSTRUCTURAL')
   );
 
   const categories = [
     {
       id: 1,
-      group: "Modality/Load",
+      group: 'Modality/Load',
       groupSize: Object.values(ModalityWeighted).length,
-      name: "Gymnastics",
+      name: 'Gymnastics'
     },
     {
       id: 2,
-      group: "Modality/Load",
-      name: "Weightlifting - Light",
+      group: 'Modality/Load',
+      name: 'Weightlifting - Light'
     },
     {
       id: 3,
-      group: "Modality/Load",
-      name: "Weightlifting - Medium",
+      group: 'Modality/Load',
+      name: 'Weightlifting - Medium'
     },
     {
       id: 4,
-      group: "Modality/Load",
-      name: "Weightlifting - Heavy",
+      group: 'Modality/Load',
+      name: 'Weightlifting - Heavy'
     },
     {
       id: 5,
-      group: "Modality/Load",
-      name: "Monostructural",
+      group: 'Modality/Load',
+      name: 'Monostructural'
     },
     {
       id: 6,
-      group: "Time",
+      group: 'Time',
       groupSize: 5,
-      name: "Heavy Day",
+      name: 'Heavy Day'
     },
     {
       id: 7,
-      group: "Time",
-      name: "< 5 min",
+      group: 'Time',
+      name: '< 5 min'
     },
     {
       id: 8,
-      group: "Time",
-      name: "5-10 min",
+      group: 'Time',
+      name: '5-10 min'
     },
     {
       id: 9,
-      group: "Time",
-      name: "11-20 min",
+      group: 'Time',
+      name: '11-20 min'
     },
     {
       id: 10,
-      group: "Time",
-      name: "> 20 min",
+      group: 'Time',
+      name: '> 20 min'
     },
     {
       id: 11,
-      group: "Total Repetitions",
+      group: 'Total Repetitions',
       groupSize: 3,
-      name: "Low (<50 reps)",
+      name: 'Low (<50 reps)'
     },
-    { id: 12, group: "Total Repetitions", name: "Medium (50-200 reps)" },
-    { id: 13, group: "Total Repetitions", name: "High (>200 reps)" },
-    { id: 14, group: "Scheme", groupSize: 4, name: "Single" },
-    { id: 15, group: "Scheme", name: "Couplet" },
-    { id: 16, group: "Scheme", name: "Triplet" },
-    { id: 17, group: "Scheme", name: "≥ 4 moves & chippers" },
-    { id: 18, group: "Priority", groupSize: 3, name: "Weight" },
-    { id: 19, group: "Priority", name: "Task" },
-    { id: 20, group: "Priority", name: "Time" },
+    { id: 12, group: 'Total Repetitions', name: 'Medium (50-200 reps)' },
+    { id: 13, group: 'Total Repetitions', name: 'High (>200 reps)' },
+    { id: 14, group: 'Scheme', groupSize: 4, name: 'Single' },
+    { id: 15, group: 'Scheme', name: 'Couplet' },
+    { id: 16, group: 'Scheme', name: 'Triplet' },
+    { id: 17, group: 'Scheme', name: '≥ 4 moves & chippers' },
+    { id: 18, group: 'Priority', groupSize: 3, name: 'Weight' },
+    { id: 19, group: 'Priority', name: 'Task' },
+    { id: 20, group: 'Priority', name: 'Time' },
     {
       id: 21,
-      group: "Movements - Gymnastics",
+      group: 'Movements - Gymnastics',
       groupSize: gymnastics.length,
-      name: gymnastics[0]?.name || "",
+      name: gymnastics[0]?.name || ''
     },
-    ...gymnastics.slice(1).map((g) => ({
-      group: "Movements - Gymnastics",
-      name: g.name,
+    ...gymnastics.slice(1).map((g, i) => ({
+      id: 22 + i,
+      group: 'Movements - Gymnastics',
+      name: g.name || ''
     })),
     {
-      id: 22,
-      group: "Movements - Weightlifting",
+      id: 22 + gymnastics.length,
+      group: 'Movements - Weightlifting',
       groupSize: weightlifting.length,
-      name: weightlifting[0]?.name || "",
+      name: weightlifting[0]?.name || ''
     },
-    ...weightlifting.slice(1).map((g) => ({
-      group: "Movements - Weightlifting",
-      name: g.name,
+    ...weightlifting.slice(1).map((g, i) => ({
+      id: 22 + gymnastics.length + i,
+      group: 'Movements - Weightlifting',
+      name: g.name || ''
     })),
     {
-      id: 23,
-      group: "Movements - Monostructural",
+      id: 22 + gymnastics.length + weightlifting.length,
+      group: 'Movements - Monostructural',
       groupSize: monostructural.length,
-      name: monostructural[0]?.name || "",
+      name: monostructural[0]?.name || ''
     },
-    ...monostructural.slice(1).map((g) => ({
-      group: "Movements - Monostructural",
-      name: g.name,
-    })),
+    ...monostructural.slice(1).map((g, i) => ({
+      id: 22 + gymnastics.length + weightlifting.length + i,
+      group: 'Movements - Monostructural',
+      name: g.name || ''
+    }))
   ];
 
   // Pass data to the page via props
   return { props: { categories } };
 }
 
-export default function Page({ categories }) {
+export default function Page({ categories }: Props) {
   const [date, setDate] = useState(startOfWeek(new Date()));
 
+  const fetchWorkouts = useCallback(async () => {
+    const start = startOfWeek(date).toISOString();
+    const end = endOfWeek(date).toISOString();
+    const datesArray = getDates(startOfWeek(date), endOfWeek(date));
+
+    const workouts = await DataStore.query(WorkoutSession, (w) =>
+      w.date.between(start, end)
+    );
+    if (workouts.length > 0)
+      console.log(workouts, workouts[0].date, new Date().toISOString());
+    let wodsArray: any[] = datesArray.map((date) => ({
+      date: date,
+      session: workouts.find((w) => w.date === format(date, 'yyyy-MM-dd'))
+    }));
+    // FIX THIS ARRAY OF PROMISES
+    console.log(wodsArray);
+    wodsArray = wodsArray.map(async (m) => {
+      let wod = undefined;
+      if (!!m.session) {
+        wod = await DataStore.query(Wod, (w) =>
+          w.wodWorkoutSessionId.eq(m.session!.id)
+        );
+      }
+      return { ...m, wod };
+    });
+    console.log('2', wodsArray);
+    // setWorkouts(workouts);
+  }, [date]);
+
+  useEffect(() => {
+    fetchWorkouts();
+  }, [date, fetchWorkouts]);
+
   const columns: Column[] = [
-    { id: "col0", label: "Workout Descriptor", colSpan: 2 },
-    { id: "col1", label: format(date, "EEE - dd/MM") },
+    { id: 'col0', label: 'Workout Descriptor', colSpan: 2 },
+    { id: 'col1', label: format(date, 'EEE - dd/MM') },
     {
-      id: "col2",
+      id: 'col2',
 
-      label: format(add(date, { days: 1 }), "EEE - dd/MM"),
+      label: format(add(date, { days: 1 }), 'EEE - dd/MM')
     },
     {
-      id: "col3",
+      id: 'col3',
 
-      label: format(add(date, { days: 2 }), "EEE - dd/MM"),
+      label: format(add(date, { days: 2 }), 'EEE - dd/MM')
     },
     {
-      id: "col4",
+      id: 'col4',
 
-      label: format(add(date, { days: 3 }), "EEE - dd/MM"),
+      label: format(add(date, { days: 3 }), 'EEE - dd/MM')
     },
     {
-      id: "col5",
+      id: 'col5',
 
-      label: format(add(date, { days: 4 }), "EEE - dd/MM"),
+      label: format(add(date, { days: 4 }), 'EEE - dd/MM')
     },
     {
-      id: "col6",
+      id: 'col6',
 
-      label: format(add(date, { days: 5 }), "EEE - dd/MM"),
+      label: format(add(date, { days: 5 }), 'EEE - dd/MM')
     },
     {
-      id: "col7",
+      id: 'col7',
 
-      label: format(add(date, { days: 6 }), "EEE - dd/MM"),
+      label: format(add(date, { days: 6 }), 'EEE - dd/MM')
     },
     {
-      id: "col8",
-      label: "Total",
-    },
+      id: 'col8',
+      label: 'Total'
+    }
   ];
 
   const getValue = (name: string, date: Date) => {
@@ -187,7 +249,7 @@ export default function Page({ categories }) {
   };
 
   return (
-    <Box sx={{ width: "100%", mb: 6 }}>
+    <Box sx={{ width: '100%', mb: 6 }}>
       <WeekPicker date={date} setDate={setDate} />
       <TableContainer>
         <Table size="small">

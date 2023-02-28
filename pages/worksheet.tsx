@@ -1,25 +1,25 @@
-import React, { useEffect, useState, useCallback } from "react";
-import Grid from "@mui/material/Unstable_Grid2";
-import { styled } from "@mui/material/styles";
-import Box from "@mui/material/Box";
-import Paper from "@mui/material/Paper";
-import { Cell } from "../components/cell";
-import WeekPicker from "../components/week-picker";
-import { add, endOfWeek, format, startOfWeek } from "date-fns";
-import { DataStore } from "aws-amplify";
-import { LazyWod, LazyWorkoutSession, Wod, WorkoutSession } from "../models";
-import { FormModal } from "../components/form-modal";
+import React, { useEffect, useState, useCallback } from 'react';
+import Grid from '@mui/material/Unstable_Grid2';
+import { styled } from '@mui/material/styles';
+import Box from '@mui/material/Box';
+import Paper from '@mui/material/Paper';
+import { Cell } from '../components/cell';
+import WeekPicker from '../components/week-picker';
+import { add, endOfWeek, format, startOfWeek } from 'date-fns';
+import { DataStore } from 'aws-amplify';
+import { LazyWod, LazyWorkoutSession, Wod, WorkoutSession } from '../models';
+import { FormModal } from '../components/form-modal';
 
 type Props = {
   workouts: WorkoutSession[];
 };
 
 const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
+  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
   ...theme.typography.body2,
   // padding: theme.spacing(1),
-  textAlign: "center",
-  color: theme.palette.text.secondary,
+  textAlign: 'center',
+  color: theme.palette.text.secondary
 }));
 
 // export async function getServerSideProps() {
@@ -39,6 +39,7 @@ export default function Worksheet() {
   const [date, setDate] = useState(startOfWeek(new Date()));
   const [workouts, setWorkouts] = useState<LazyWorkoutSession[]>([]);
   const [selectedWod, setSelectedWod] = useState<LazyWod>();
+  const [selectedWorkout, setSelectedWorkout] = useState<LazyWorkoutSession>();
   const [selectedDate, setSelectedDate] = useState<Date>();
   const [openForm, setOpenForm] = useState(false);
 
@@ -49,7 +50,7 @@ export default function Worksheet() {
     add(date, { days: 3 }),
     add(date, { days: 4 }),
     add(date, { days: 5 }),
-    add(date, { days: 6 }),
+    add(date, { days: 6 })
   ];
 
   const fetchWorkouts = useCallback(async () => {
@@ -75,15 +76,16 @@ export default function Worksheet() {
     workout: WorkoutSession | undefined,
     selectedDate: Date
   ) => {
+    console.log(workout, selectedDate);
     if (!workout) {
       const session = await DataStore.save(
         new WorkoutSession({
-          date: format(selectedDate, "yyyy-MM-dd"),
+          date: format(selectedDate, 'yyyy-MM-dd')
         })
       );
       const wod = await DataStore.save(
         new Wod({
-          WorkoutSession: session,
+          WorkoutSession: session
         })
       );
       await DataStore.save(
@@ -92,11 +94,14 @@ export default function Worksheet() {
         })
       );
       setSelectedWod(wod);
+      setSelectedWorkout(session);
     } else {
       const wod = await DataStore.query(Wod, (w) =>
-        w.wodWorkoutSessionId.eq(workout.workoutSessionWodId)
+        w.wodWorkoutSessionId.eq(workout.id)
       );
+      console.log(wod[0]);
       setSelectedWod(wod[0]);
+      setSelectedWorkout(workout);
     }
     setSelectedDate(selectedDate);
     setOpenForm(true);
@@ -108,13 +113,13 @@ export default function Worksheet() {
       <Grid container spacing={1} mt={2} flexWrap="nowrap">
         {dates.map((day) => {
           const workout = workouts.find(
-            (w) => w.date === format(day, "yyyy-MM-dd")
+            (w) => w.date === format(day, 'yyyy-MM-dd')
           );
 
           return (
-            <Grid key={format(day, "ddMM")}>
+            <Grid key={format(day, 'ddMM')}>
               <Grid>
-                <Item>{format(day, "EEEE - dd/MM")}</Item>
+                <Item>{format(day, 'EEEE - dd/MM')}</Item>
               </Grid>
               <Grid>
                 <Item>
@@ -176,6 +181,7 @@ export default function Worksheet() {
             setOpen={setOpenForm}
             date={selectedDate!}
             wod={selectedWod}
+            workout={selectedWorkout!}
             onClose={onCloseForm}
           />
         )}

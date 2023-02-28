@@ -28,7 +28,7 @@ export const schema = {
                     "association": {
                         "connectionType": "HAS_ONE",
                         "associatedWith": [
-                            "WorkoutSession"
+                            "id"
                         ],
                         "targetNames": [
                             "workoutSessionWodId"
@@ -232,6 +232,13 @@ export const schema = {
                     "name": "comment",
                     "isArray": false,
                     "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "isSequence": {
+                    "name": "isSequence",
+                    "isArray": false,
+                    "type": "Boolean",
                     "isRequired": false,
                     "attributes": []
                 },
@@ -570,10 +577,18 @@ export const schema = {
                     "type": "Float",
                     "isRequired": false,
                     "attributes": []
+                },
+                "sequence": {
+                    "name": "sequence",
+                    "isArray": true,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true
                 }
             }
         }
     },
-    "codegenVersion": "3.3.2",
-    "version": "9e3a899d8410c55528d5487a5e361f39"
+    "codegenVersion": "3.3.5",
+    "version": "77217b5db6aa1d8f89fcfb58e655e29e"
 };

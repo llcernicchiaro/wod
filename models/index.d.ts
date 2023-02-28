@@ -55,6 +55,7 @@ type EagerMovement = {
   readonly variationId?: string | null;
   readonly menWeight?: number | null;
   readonly womenWeight?: number | null;
+  readonly sequence?: (string | null)[] | null;
 }
 
 type LazyMovement = {
@@ -66,6 +67,7 @@ type LazyMovement = {
   readonly variationId?: string | null;
   readonly menWeight?: number | null;
   readonly womenWeight?: number | null;
+  readonly sequence?: (string | null)[] | null;
 }
 
 export declare type Movement = LazyLoading extends LazyLoadingDisabled ? EagerMovement : LazyMovement
@@ -133,6 +135,7 @@ type EagerWod = {
   readonly rounds?: number | null;
   readonly WorkoutSession?: WorkoutSession | null;
   readonly comment?: string | null;
+  readonly isSequence?: boolean | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   readonly wodWorkoutSessionId?: string | null;
@@ -155,6 +158,7 @@ type LazyWod = {
   readonly rounds?: number | null;
   readonly WorkoutSession: AsyncItem<WorkoutSession | undefined>;
   readonly comment?: string | null;
+  readonly isSequence?: boolean | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   readonly wodWorkoutSessionId?: string | null;
