@@ -48,7 +48,7 @@ export function Cell({ date, stage, workoutSession, onOpenForm }: Props) {
   const [text, setText] = useState('');
 
   useEffect(() => {
-    if (workoutSession) setText(workoutSession[stages[stage]]);
+    if (workoutSession) setText(workoutSession[stages[stage]] || '');
   }, [stage, workoutSession]);
 
   const debounced = useDebouncedCallback(async function (value) {

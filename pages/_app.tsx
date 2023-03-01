@@ -1,15 +1,15 @@
-import { Amplify } from "aws-amplify";
-import { withAuthenticator } from "@aws-amplify/ui-react";
-import "@aws-amplify/ui-react/styles.css";
-import "../styles/globals.css";
-import type { AppProps } from "next/app";
-import awsExports from "../aws-exports";
-import { Layout } from "../components/layout";
-import Head from "next/head";
+import { Amplify } from 'aws-amplify';
+import { withAuthenticator } from '@aws-amplify/ui-react';
+import '@aws-amplify/ui-react/styles.css';
+import '../styles/globals.css';
+import type { AppProps } from 'next/app';
+import awsExports from '../aws-exports';
+import { Layout } from '../components/layout';
+import Head from 'next/head';
 
 Amplify.configure(awsExports);
 
-function App({ signOut, user, Component, pageProps }: AppProps) {
+function App({ Component, pageProps }: AppProps) {
   return (
     <>
       {/* // <h1>Hello {user.username}</h1>
