@@ -1,11 +1,11 @@
-import { IconButton, TextField } from "@mui/material";
-import { Wod, WorkoutSession } from "../models";
-import EditIcon from "@mui/icons-material/Edit";
-import { Box } from "@mui/system";
-import { useEffect, useState } from "react";
-import { useDebouncedCallback } from "use-debounce";
-import { DataStore } from "aws-amplify";
-import { format } from "date-fns";
+import { IconButton, TextField } from '@mui/material';
+import { Wod, WorkoutSession } from '../models';
+import EditIcon from '@mui/icons-material/Edit';
+import { Box } from '@mui/system';
+import { useEffect, useState } from 'react';
+import { useDebouncedCallback } from 'use-debounce';
+import { DataStore } from 'aws-amplify';
+import { format } from 'date-fns';
 
 type Header = {
   name: string;
@@ -19,25 +19,33 @@ type Props = {
   workoutSession?: WorkoutSession;
   date: Date;
   stage:
-    | "WHITEBOARD"
-    | "GENERAL WARM-UP"
-    | "SPECIFIC WARM-UP"
-    | "BREAK AND LOGISTICS"
-    | "WORKOUT"
-    | "COOL-DOWN";
+    | 'WHITEBOARD'
+    | 'GENERAL WARM-UP'
+    | 'SPECIFIC WARM-UP'
+    | 'BREAK AND LOGISTICS'
+    | 'WORKOUT'
+    | 'COOL-DOWN';
 };
 
-const stages = {
-  WHITEBOARD: "whiteboard",
-  "GENERAL WARM-UP": "generalwu",
-  "SPECIFIC WARM-UP": "specificwu",
-  "BREAK AND LOGISTICS": "break",
-  WORKOUT: "workout",
-  "COOL-DOWN": "cooldown",
+type Stages = {
+  WHITEBOARD: 'whiteboard';
+  'GENERAL WARM-UP': 'generalwu';
+  'SPECIFIC WARM-UP': 'specificwu';
+  'BREAK AND LOGISTICS': 'break';
+  WORKOUT: 'workout';
+  'COOL-DOWN': 'cooldown';
+};
+const stages: Stages = {
+  WHITEBOARD: 'whiteboard',
+  'GENERAL WARM-UP': 'generalwu',
+  'SPECIFIC WARM-UP': 'specificwu',
+  'BREAK AND LOGISTICS': 'break',
+  WORKOUT: 'workout',
+  'COOL-DOWN': 'cooldown'
 };
 
 export function Cell({ date, stage, workoutSession, onOpenForm }: Props) {
-  const [text, setText] = useState("");
+  const [text, setText] = useState('');
 
   useEffect(() => {
     if (workoutSession) setText(workoutSession[stages[stage]]);
@@ -51,17 +59,17 @@ export function Cell({ date, stage, workoutSession, onOpenForm }: Props) {
           updated[stages[stage]] = value;
         })
       );
-      console.log("Edit ", result);
+      console.log('Edit ', result);
     } else {
       const session = await DataStore.save(
         new WorkoutSession({
           [stages[stage]]: value,
-          date: format(date, "yyyy-MM-dd"),
+          date: format(date, 'yyyy-MM-dd')
         })
       );
       const wod = await DataStore.save(
         new Wod({
-          WorkoutSession: session,
+          WorkoutSession: session
         })
       );
 
@@ -70,26 +78,26 @@ export function Cell({ date, stage, workoutSession, onOpenForm }: Props) {
           updated.Wod = wod;
         })
       );
-      console.log("Create WodSession and Wod", session2, wod);
+      console.log('Create WodSession and Wod', session2, wod);
     }
   }, 1000);
 
   const header = {
     duration: 5,
     start: 32,
-    end: 37,
+    end: 37
   };
 
   return (
     <Box>
       <Box
         sx={{
-          backgroundColor: "#1976d2",
-          color: "white",
-          borderTopLeftRadius: "4px",
-          borderTopRightRadius: "4px",
-          padding: "4px",
-          fontWeight: "bold",
+          backgroundColor: '#1976d2',
+          color: 'white',
+          borderTopLeftRadius: '4px',
+          borderTopRightRadius: '4px',
+          padding: '4px',
+          fontWeight: 'bold'
         }}
       >
         {stage} ({header.duration} min) :{header.start}-:{header.end}
@@ -103,15 +111,15 @@ export function Cell({ date, stage, workoutSession, onOpenForm }: Props) {
         textAlign="left"
         position="relative"
       >
-        {stage === "WORKOUT" ? (
+        {stage === 'WORKOUT' ? (
           <>
             <IconButton
-              sx={{ position: "absolute", right: 0, top: 0 }}
+              sx={{ position: 'absolute', right: 0, top: 0 }}
               onClick={() => onOpenForm!(workoutSession, date)}
             >
               <EditIcon />
             </IconButton>
-            <p style={{ whiteSpace: "pre-line" }}>{text}</p>
+            <p style={{ whiteSpace: 'pre-line' }}>{text}</p>
           </>
         ) : (
           <TextField
