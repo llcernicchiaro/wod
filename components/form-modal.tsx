@@ -12,11 +12,7 @@ import {
   Dialog,
   TextField,
   Box,
-  Stack,
-  Button,
-  FormGroup,
-  FormControlLabel,
-  Switch
+  Stack
 } from '@mui/material';
 import { format } from 'date-fns';
 import {
@@ -25,7 +21,7 @@ import {
   LazyMovement,
   LazyMoveVariation,
   Move,
-  ModalityWeighted,
+  Modality,
   MoveVariation,
   Wod,
   WodType,
@@ -221,7 +217,7 @@ export function FormModal({
                 if (move.womenWeight)
                   moveText = moveText.concat('/', move.womenWeight.toString());
                 if (move.menWeight || move.womenWeight)
-                  moveText = moveText.concat('', 'kg )');
+                  moveText = moveText.concat('', 'kg)');
                 return moveText;
               }
             })
@@ -284,12 +280,14 @@ export function FormModal({
     setGroup(wod.group || 'SOLO');
     setComment(wod.comment || '');
     setTimeCap(wod.time || '');
+    console.log(wod);
     if (wod.movements)
       setWodMoves(
         wod.movements.length > 0
           ? (wod.movements as LazyMovement[])
           : [{ moveId: '' }]
       );
+    else setWodMoves([{ moveId: '' }]);
   }, [wod]);
 
   useEffect(() => setWorkoutText(workout?.workout! || ''), [workout]);
@@ -334,8 +332,8 @@ export function FormModal({
 
     if (somethingChanged) {
       const filteredWodMoves = wodMoves.filter((move) => !!move.moveId);
-      const modalities: ModalityWeighted[] = wodMoves.map(
-        (m) => m.modality as ModalityWeighted
+      const modalities: Modality[] = wodMoves.map(
+        (m) => m.modality as Modality
       );
       // NEED IMPROVEMENT FOR AMRAP
       let totalReps = 0;
@@ -384,8 +382,6 @@ export function FormModal({
     setOpen(false);
   };
 
-  console.log(wodMoves);
-
   const onChangeMove = (
     value: LazyMove | string | string[],
     field: string,
@@ -395,12 +391,12 @@ export function FormModal({
       if (index === i) {
         if (field === 'moveId') {
           const { id, modality } = value as LazyMove;
-
-          const weightedModality: ModalityWeighted =
-            modality === 'WEIGHTLIFTING'
-              ? 'WEIGHTLIFTINGLIGHT'
-              : (modality as any);
-          return { ...move, moveId: id, modality: weightedModality };
+          // Removed WeightedModality for v1
+          // const weightedModality: ModalityWeighted =
+          //   modality === 'WEIGHTLIFTING'
+          //     ? 'WEIGHTLIFTINGLIGHT'
+          //     : (modality as any);
+          return { ...move, moveId: id, modality };
         }
         return { ...move, [field]: value };
       } else return move;

@@ -120,6 +120,18 @@ export const schema = {
                                     "delete",
                                     "read"
                                 ]
+                            },
+                            {
+                                "provider": "userPools",
+                                "ownerField": "owner",
+                                "allow": "owner",
+                                "identityClaim": "cognito:username",
+                                "operations": [
+                                    "create",
+                                    "update",
+                                    "delete",
+                                    "read"
+                                ]
                             }
                         ]
                     }
@@ -157,7 +169,7 @@ export const schema = {
                     "name": "modalities",
                     "isArray": true,
                     "type": {
-                        "enum": "ModalityWeighted"
+                        "enum": "Modality"
                     },
                     "isRequired": false,
                     "attributes": [],
@@ -279,6 +291,18 @@ export const schema = {
                         "rules": [
                             {
                                 "allow": "public",
+                                "operations": [
+                                    "create",
+                                    "update",
+                                    "delete",
+                                    "read"
+                                ]
+                            },
+                            {
+                                "provider": "userPools",
+                                "ownerField": "owner",
+                                "allow": "owner",
+                                "identityClaim": "cognito:username",
                                 "operations": [
                                     "create",
                                     "update",
@@ -471,14 +495,12 @@ export const schema = {
                 "CUSTOM"
             ]
         },
-        "ModalityWeighted": {
-            "name": "ModalityWeighted",
+        "Modality": {
+            "name": "Modality",
             "values": [
                 "GYMNASTICS",
                 "MONOSTRUCTURAL",
-                "WEIGHTLIFTINGLIGHT",
-                "WEIGHTLIFTINGMEDIUM",
-                "WEIGHTLIFTINGHEAVY"
+                "WEIGHTLIFTING"
             ]
         },
         "Priority": {
@@ -507,12 +529,14 @@ export const schema = {
                 "INTEAMSOF4"
             ]
         },
-        "Modality": {
-            "name": "Modality",
+        "ModalityWeighted": {
+            "name": "ModalityWeighted",
             "values": [
                 "GYMNASTICS",
                 "MONOSTRUCTURAL",
-                "WEIGHTLIFTING"
+                "WEIGHTLIFTINGLIGHT",
+                "WEIGHTLIFTINGMEDIUM",
+                "WEIGHTLIFTINGHEAVY"
             ]
         }
     },
@@ -538,7 +562,7 @@ export const schema = {
                     "name": "modality",
                     "isArray": false,
                     "type": {
-                        "enum": "ModalityWeighted"
+                        "enum": "Modality"
                     },
                     "isRequired": false,
                     "attributes": []
@@ -567,14 +591,14 @@ export const schema = {
                 "menWeight": {
                     "name": "menWeight",
                     "isArray": false,
-                    "type": "Float",
+                    "type": "String",
                     "isRequired": false,
                     "attributes": []
                 },
                 "womenWeight": {
                     "name": "womenWeight",
                     "isArray": false,
-                    "type": "Float",
+                    "type": "String",
                     "isRequired": false,
                     "attributes": []
                 },
@@ -590,5 +614,5 @@ export const schema = {
         }
     },
     "codegenVersion": "3.3.5",
-    "version": "77217b5db6aa1d8f89fcfb58e655e29e"
+    "version": "e7c684f9435eeb7b7bbb636c97c80e8b"
 };

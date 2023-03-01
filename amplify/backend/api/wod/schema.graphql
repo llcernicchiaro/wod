@@ -8,7 +8,7 @@ enum WodType {
   CUSTOM
 }
 
-type WorkoutSession @model @auth(rules: [{allow: public}]) {
+type WorkoutSession @model @auth(rules: [{allow: public}, {allow: owner}]) {
   id: ID!
   date: AWSDate
   Wod: Wod @hasOne
@@ -65,20 +65,20 @@ enum Priority {
 type Movement {
   repetitions: String
   weight: String
-  modality: ModalityWeighted
+  modality: Modality
   time: String
   moveId: ID
   variationId: ID
-  menWeight: Float
-  womenWeight: Float
+  menWeight: String
+  womenWeight: String
   sequence: [String]
 }
 
-type Wod @model @auth(rules: [{allow: public}]) {
+type Wod @model @auth(rules: [{allow: public}, {allow: owner}]) {
   id: ID!
   movements: [Movement]
   time: String
-  modalities: [ModalityWeighted]
+  modalities: [Modality]
   totalReps: Int
   priority: Priority
   scheme: Scheme

@@ -55,7 +55,7 @@ export const MoveSelect = ({
     sequenceArray[i] = value;
     onChangeMove(sequenceArray, 'sequence', index);
   };
-
+  console.log(move?.modality === 'WEIGHTLIFTING', move?.modality);
   return (
     <Stack spacing={2}>
       <Stack spacing={2} direction="row" width="100%">
@@ -110,7 +110,7 @@ export const MoveSelect = ({
             )}
           />
         )}
-        {move?.modality?.includes('WEIGHTLIFTING') && !isHeavyDay && (
+        {move?.modality === 'WEIGHTLIFTING' && !isHeavyDay && (
           <>
             <TextField
               variant="standard"

@@ -12,12 +12,10 @@ export enum WodType {
   CUSTOM = "CUSTOM"
 }
 
-export enum ModalityWeighted {
+export enum Modality {
   GYMNASTICS = "GYMNASTICS",
   MONOSTRUCTURAL = "MONOSTRUCTURAL",
-  WEIGHTLIFTINGLIGHT = "WEIGHTLIFTINGLIGHT",
-  WEIGHTLIFTINGMEDIUM = "WEIGHTLIFTINGMEDIUM",
-  WEIGHTLIFTINGHEAVY = "WEIGHTLIFTINGHEAVY"
+  WEIGHTLIFTING = "WEIGHTLIFTING"
 }
 
 export enum Priority {
@@ -40,33 +38,35 @@ export enum Group {
   INTEAMSOF4 = "INTEAMSOF4"
 }
 
-export enum Modality {
+export enum ModalityWeighted {
   GYMNASTICS = "GYMNASTICS",
   MONOSTRUCTURAL = "MONOSTRUCTURAL",
-  WEIGHTLIFTING = "WEIGHTLIFTING"
+  WEIGHTLIFTINGLIGHT = "WEIGHTLIFTINGLIGHT",
+  WEIGHTLIFTINGMEDIUM = "WEIGHTLIFTINGMEDIUM",
+  WEIGHTLIFTINGHEAVY = "WEIGHTLIFTINGHEAVY"
 }
 
 type EagerMovement = {
   readonly repetitions?: string | null;
   readonly weight?: string | null;
-  readonly modality?: ModalityWeighted | keyof typeof ModalityWeighted | null;
+  readonly modality?: Modality | keyof typeof Modality | null;
   readonly time?: string | null;
   readonly moveId?: string | null;
   readonly variationId?: string | null;
-  readonly menWeight?: number | null;
-  readonly womenWeight?: number | null;
+  readonly menWeight?: string | null;
+  readonly womenWeight?: string | null;
   readonly sequence?: (string | null)[] | null;
 }
 
 type LazyMovement = {
   readonly repetitions?: string | null;
   readonly weight?: string | null;
-  readonly modality?: ModalityWeighted | keyof typeof ModalityWeighted | null;
+  readonly modality?: Modality | keyof typeof Modality | null;
   readonly time?: string | null;
   readonly moveId?: string | null;
   readonly variationId?: string | null;
-  readonly menWeight?: number | null;
-  readonly womenWeight?: number | null;
+  readonly menWeight?: string | null;
+  readonly womenWeight?: string | null;
   readonly sequence?: (string | null)[] | null;
 }
 
@@ -126,7 +126,7 @@ type EagerWod = {
   readonly id: string;
   readonly movements?: (Movement | null)[] | null;
   readonly time?: string | null;
-  readonly modalities?: (ModalityWeighted | null)[] | keyof typeof ModalityWeighted | null;
+  readonly modalities?: (Modality | null)[] | keyof typeof Modality | null;
   readonly totalReps?: number | null;
   readonly priority?: Priority | keyof typeof Priority | null;
   readonly scheme?: Scheme | keyof typeof Scheme | null;
@@ -149,7 +149,7 @@ type LazyWod = {
   readonly id: string;
   readonly movements?: (Movement | null)[] | null;
   readonly time?: string | null;
-  readonly modalities?: (ModalityWeighted | null)[] | keyof typeof ModalityWeighted | null;
+  readonly modalities?: (Modality | null)[] | keyof typeof Modality | null;
   readonly totalReps?: number | null;
   readonly priority?: Priority | keyof typeof Priority | null;
   readonly scheme?: Scheme | keyof typeof Scheme | null;

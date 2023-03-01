@@ -12,12 +12,10 @@ const WodType = {
   "CUSTOM": "CUSTOM"
 };
 
-const ModalityWeighted = {
+const Modality = {
   "GYMNASTICS": "GYMNASTICS",
   "MONOSTRUCTURAL": "MONOSTRUCTURAL",
-  "WEIGHTLIFTINGLIGHT": "WEIGHTLIFTINGLIGHT",
-  "WEIGHTLIFTINGMEDIUM": "WEIGHTLIFTINGMEDIUM",
-  "WEIGHTLIFTINGHEAVY": "WEIGHTLIFTINGHEAVY"
+  "WEIGHTLIFTING": "WEIGHTLIFTING"
 };
 
 const Priority = {
@@ -40,10 +38,12 @@ const Group = {
   "INTEAMSOF4": "INTEAMSOF4"
 };
 
-const Modality = {
+const ModalityWeighted = {
   "GYMNASTICS": "GYMNASTICS",
   "MONOSTRUCTURAL": "MONOSTRUCTURAL",
-  "WEIGHTLIFTING": "WEIGHTLIFTING"
+  "WEIGHTLIFTINGLIGHT": "WEIGHTLIFTINGLIGHT",
+  "WEIGHTLIFTINGMEDIUM": "WEIGHTLIFTINGMEDIUM",
+  "WEIGHTLIFTINGHEAVY": "WEIGHTLIFTINGHEAVY"
 };
 
 const { WorkoutSession, Wod, MoveVariation, Move, Movement } = initSchema(schema);
@@ -54,10 +54,10 @@ export {
   MoveVariation,
   Move,
   WodType,
-  ModalityWeighted,
+  Modality,
   Priority,
   Scheme,
   Group,
-  Modality,
+  ModalityWeighted,
   Movement
 };
