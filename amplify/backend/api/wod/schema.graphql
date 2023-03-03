@@ -8,7 +8,7 @@ enum WodType {
   CUSTOM
 }
 
-type WorkoutSession @model @auth(rules: [{allow: public}, {allow: owner}]) {
+type WorkoutSession @model @auth(rules: [{allow: owner}]) {
   id: ID!
   date: AWSDate
   Wod: Wod @hasOne
@@ -74,7 +74,7 @@ type Movement {
   sequence: [String]
 }
 
-type Wod @model @auth(rules: [{allow: public}, {allow: owner}]) {
+type Wod @model @auth(rules: [{allow: owner}]) {
   id: ID!
   movements: [Movement]
   time: String
