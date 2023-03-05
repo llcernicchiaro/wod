@@ -8,7 +8,8 @@ import {
   format,
   setDefaultOptions,
   add,
-  sub
+  sub,
+  isValid
 } from 'date-fns';
 import { styled } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
@@ -56,6 +57,7 @@ type WeekPickerProps = {
 };
 
 export function WeekPicker({ date, setDate }: WeekPickerProps) {
+  const [open, setOpen] = useState(false);
   const start = startOfWeek(date);
   const end = endOfWeek(date);
 
@@ -92,7 +94,7 @@ export function WeekPicker({ date, setDate }: WeekPickerProps) {
   };
 
   const onChangeDate = (newValue: Date | null) => {
-    if (newValue) setDate(startOfWeek(newValue));
+    if (newValue && isValid(newValue)) setDate(startOfWeek(newValue));
   };
 
   return (
@@ -101,11 +103,16 @@ export function WeekPicker({ date, setDate }: WeekPickerProps) {
         <ChevronLeftIcon />
       </IconButton>
       <DatePicker
+        open={open}
+        onOpen={() => setOpen(true)}
+        onClose={() => setOpen(false)}
         label={`Week ${getWeek(date)}`}
         value={date}
         onChange={onChangeDate}
         renderDay={renderWeekPickerDay}
-        renderInput={(params) => <TextField {...params} size="small" />}
+        renderInput={(params) => (
+          <TextField {...params} size="small" onClick={(e) => setOpen(true)} />
+        )}
         inputFormat={`${format(start, 'dd/MM')} - ${format(end, 'dd/MM')}`}
       />
       <IconButton onClick={goToNextWeek}>
