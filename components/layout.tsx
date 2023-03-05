@@ -11,7 +11,7 @@ export const Layout: FC<Props> = ({ children }) => {
     <>
       <Navbar />
       <main>
-        <Container>
+        <Container maxWidth="xl">
           <Box sx={{ flexGrow: 1, mt: 4 }}>{children}</Box>
         </Container>
       </main>

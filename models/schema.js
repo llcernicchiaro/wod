@@ -129,6 +129,172 @@ export const schema = {
                 }
             ]
         },
+        "MoveVariation": {
+            "name": "MoveVariation",
+            "fields": {
+                "id": {
+                    "name": "id",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "name": {
+                    "name": "name",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "moveID": {
+                    "name": "moveID",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "createdAt": {
+                    "name": "createdAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "updatedAt": {
+                    "name": "updatedAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                }
+            },
+            "syncable": true,
+            "pluralName": "MoveVariations",
+            "attributes": [
+                {
+                    "type": "model",
+                    "properties": {}
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "byMove",
+                        "fields": [
+                            "moveID"
+                        ]
+                    }
+                },
+                {
+                    "type": "auth",
+                    "properties": {
+                        "rules": [
+                            {
+                                "allow": "public",
+                                "operations": [
+                                    "create",
+                                    "update",
+                                    "delete",
+                                    "read"
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "Move": {
+            "name": "Move",
+            "fields": {
+                "id": {
+                    "name": "id",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "name": {
+                    "name": "name",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "video": {
+                    "name": "video",
+                    "isArray": false,
+                    "type": "AWSURL",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "modality": {
+                    "name": "modality",
+                    "isArray": false,
+                    "type": {
+                        "enum": "Modality"
+                    },
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "MoveVariations": {
+                    "name": "MoveVariations",
+                    "isArray": true,
+                    "type": {
+                        "model": "MoveVariation"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true,
+                    "association": {
+                        "connectionType": "HAS_MANY",
+                        "associatedWith": [
+                            "moveID"
+                        ]
+                    }
+                },
+                "createdAt": {
+                    "name": "createdAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "updatedAt": {
+                    "name": "updatedAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                }
+            },
+            "syncable": true,
+            "pluralName": "Moves",
+            "attributes": [
+                {
+                    "type": "model",
+                    "properties": {}
+                },
+                {
+                    "type": "auth",
+                    "properties": {
+                        "rules": [
+                            {
+                                "allow": "public",
+                                "operations": [
+                                    "create",
+                                    "update",
+                                    "delete",
+                                    "read"
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
         "Wod": {
             "name": "Wod",
             "fields": {
@@ -296,172 +462,6 @@ export const schema = {
                     }
                 }
             ]
-        },
-        "MoveVariation": {
-            "name": "MoveVariation",
-            "fields": {
-                "id": {
-                    "name": "id",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "name": {
-                    "name": "name",
-                    "isArray": false,
-                    "type": "String",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "moveID": {
-                    "name": "moveID",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "createdAt": {
-                    "name": "createdAt",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
-                },
-                "updatedAt": {
-                    "name": "updatedAt",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
-                }
-            },
-            "syncable": true,
-            "pluralName": "MoveVariations",
-            "attributes": [
-                {
-                    "type": "model",
-                    "properties": {}
-                },
-                {
-                    "type": "key",
-                    "properties": {
-                        "name": "byMove",
-                        "fields": [
-                            "moveID"
-                        ]
-                    }
-                },
-                {
-                    "type": "auth",
-                    "properties": {
-                        "rules": [
-                            {
-                                "allow": "public",
-                                "operations": [
-                                    "create",
-                                    "update",
-                                    "delete",
-                                    "read"
-                                ]
-                            }
-                        ]
-                    }
-                }
-            ]
-        },
-        "Move": {
-            "name": "Move",
-            "fields": {
-                "id": {
-                    "name": "id",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "name": {
-                    "name": "name",
-                    "isArray": false,
-                    "type": "String",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "video": {
-                    "name": "video",
-                    "isArray": false,
-                    "type": "AWSURL",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "modality": {
-                    "name": "modality",
-                    "isArray": false,
-                    "type": {
-                        "enum": "Modality"
-                    },
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "MoveVariations": {
-                    "name": "MoveVariations",
-                    "isArray": true,
-                    "type": {
-                        "model": "MoveVariation"
-                    },
-                    "isRequired": false,
-                    "attributes": [],
-                    "isArrayNullable": true,
-                    "association": {
-                        "connectionType": "HAS_MANY",
-                        "associatedWith": [
-                            "moveID"
-                        ]
-                    }
-                },
-                "createdAt": {
-                    "name": "createdAt",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
-                },
-                "updatedAt": {
-                    "name": "updatedAt",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
-                }
-            },
-            "syncable": true,
-            "pluralName": "Moves",
-            "attributes": [
-                {
-                    "type": "model",
-                    "properties": {}
-                },
-                {
-                    "type": "auth",
-                    "properties": {
-                        "rules": [
-                            {
-                                "allow": "public",
-                                "operations": [
-                                    "create",
-                                    "update",
-                                    "delete",
-                                    "read"
-                                ]
-                            }
-                        ]
-                    }
-                }
-            ]
         }
     },
     "enums": {
@@ -477,29 +477,14 @@ export const schema = {
                 "CUSTOM"
             ]
         },
-        "Modality": {
-            "name": "Modality",
+        "ModalityWeighted": {
+            "name": "ModalityWeighted",
             "values": [
                 "GYMNASTICS",
                 "MONOSTRUCTURAL",
-                "WEIGHTLIFTING"
-            ]
-        },
-        "Priority": {
-            "name": "Priority",
-            "values": [
-                "TASK",
-                "TIME",
-                "WEIGHT"
-            ]
-        },
-        "Scheme": {
-            "name": "Scheme",
-            "values": [
-                "SINGLE",
-                "COUPLET",
-                "TRIPLET",
-                "PLUS4MOVES"
+                "WEIGHTLIFTINGLIGHT",
+                "WEIGHTLIFTINGMEDIUM",
+                "WEIGHTLIFTINGHEAVY"
             ]
         },
         "Group": {
@@ -511,14 +496,29 @@ export const schema = {
                 "INTEAMSOF4"
             ]
         },
-        "ModalityWeighted": {
-            "name": "ModalityWeighted",
+        "Scheme": {
+            "name": "Scheme",
+            "values": [
+                "SINGLE",
+                "COUPLET",
+                "TRIPLET",
+                "PLUS4MOVES"
+            ]
+        },
+        "Priority": {
+            "name": "Priority",
+            "values": [
+                "TASK",
+                "TIME",
+                "WEIGHT"
+            ]
+        },
+        "Modality": {
+            "name": "Modality",
             "values": [
                 "GYMNASTICS",
                 "MONOSTRUCTURAL",
-                "WEIGHTLIFTINGLIGHT",
-                "WEIGHTLIFTINGMEDIUM",
-                "WEIGHTLIFTINGHEAVY"
+                "WEIGHTLIFTING"
             ]
         }
     },
@@ -595,6 +595,6 @@ export const schema = {
             }
         }
     },
-    "codegenVersion": "3.3.5",
+    "codegenVersion": "3.3.6",
     "version": "e7c684f9435eeb7b7bbb636c97c80e8b"
 };

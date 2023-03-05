@@ -1,6 +1,7 @@
-import { IconButton, TextField } from '@mui/material';
+import { IconButton, TextField, Typography } from '@mui/material';
 import { Wod, WorkoutSession } from '../models';
 import EditIcon from '@mui/icons-material/Edit';
+import AddIcon from '@mui/icons-material/Add';
 import { Box } from '@mui/system';
 import { useEffect, useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
@@ -82,25 +83,34 @@ export function Cell({ date, stage, workoutSession, onOpenForm }: Props) {
     }
   }, 1000);
 
-  const header = {
-    duration: 5,
-    start: 32,
-    end: 37
+  // const header = {
+  //   duration: 5,
+  //   start: 32,
+  //   end: 37
+  // };
+
+  const backgroundColor = {
+    WHITEBOARD: 'primary.dark',
+    'GENERAL WARM-UP': 'primary.main',
+    'SPECIFIC WARM-UP': 'secondary.dark',
+    'BREAK AND LOGISTICS': 'secondary.main',
+    WORKOUT: 'success.dark',
+    'COOL-DOWN': 'success.main'
   };
 
   return (
     <Box>
       <Box
+        p={0.5}
         sx={{
-          backgroundColor: '#1976d2',
+          backgroundColor: backgroundColor[stage],
           color: 'white',
           borderTopLeftRadius: '4px',
-          borderTopRightRadius: '4px',
-          padding: '4px',
-          fontWeight: 'bold'
+          borderTopRightRadius: '4px'
         }}
       >
-        {stage} ({header.duration} min) :{header.start}-:{header.end}
+        <Typography>{stage}</Typography>
+        {/* ({header.duration} min) :{header.start}-:{header.end} */}
       </Box>
       <Box
         padding={1}
@@ -117,18 +127,18 @@ export function Cell({ date, stage, workoutSession, onOpenForm }: Props) {
               sx={{ position: 'absolute', right: 0, top: 0 }}
               onClick={() => onOpenForm!(workoutSession, date)}
             >
-              <EditIcon />
+              {workoutSession?.workout ? <EditIcon /> : <AddIcon />}
             </IconButton>
             <p style={{ whiteSpace: 'pre-line' }}>{text}</p>
           </>
         ) : (
           <TextField
             multiline
-            minRows={3}
+            minRows={1}
             defaultValue={text}
             variant="standard"
             size="small"
-            placeholder="Click here to start editing"
+            placeholder="Edit here"
             InputProps={{ disableUnderline: true }}
             onChange={(e) => debounced(e.target.value)}
           />

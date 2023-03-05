@@ -12,23 +12,12 @@ const WodType = {
   "CUSTOM": "CUSTOM"
 };
 
-const Modality = {
+const ModalityWeighted = {
   "GYMNASTICS": "GYMNASTICS",
   "MONOSTRUCTURAL": "MONOSTRUCTURAL",
-  "WEIGHTLIFTING": "WEIGHTLIFTING"
-};
-
-const Priority = {
-  "TASK": "TASK",
-  "TIME": "TIME",
-  "WEIGHT": "WEIGHT"
-};
-
-const Scheme = {
-  "SINGLE": "SINGLE",
-  "COUPLET": "COUPLET",
-  "TRIPLET": "TRIPLET",
-  "PLUS4_MOVES": "PLUS4MOVES"
+  "WEIGHTLIFTINGLIGHT": "WEIGHTLIFTINGLIGHT",
+  "WEIGHTLIFTINGMEDIUM": "WEIGHTLIFTINGMEDIUM",
+  "WEIGHTLIFTINGHEAVY": "WEIGHTLIFTINGHEAVY"
 };
 
 const Group = {
@@ -38,26 +27,37 @@ const Group = {
   "INTEAMSOF4": "INTEAMSOF4"
 };
 
-const ModalityWeighted = {
-  "GYMNASTICS": "GYMNASTICS",
-  "MONOSTRUCTURAL": "MONOSTRUCTURAL",
-  "WEIGHTLIFTINGLIGHT": "WEIGHTLIFTINGLIGHT",
-  "WEIGHTLIFTINGMEDIUM": "WEIGHTLIFTINGMEDIUM",
-  "WEIGHTLIFTINGHEAVY": "WEIGHTLIFTINGHEAVY"
+const Scheme = {
+  "SINGLE": "SINGLE",
+  "COUPLET": "COUPLET",
+  "TRIPLET": "TRIPLET",
+  "PLUS4_MOVES": "PLUS4MOVES"
 };
 
-const { WorkoutSession, Wod, MoveVariation, Move, Movement } = initSchema(schema);
+const Priority = {
+  "TASK": "TASK",
+  "TIME": "TIME",
+  "WEIGHT": "WEIGHT"
+};
+
+const Modality = {
+  "GYMNASTICS": "GYMNASTICS",
+  "MONOSTRUCTURAL": "MONOSTRUCTURAL",
+  "WEIGHTLIFTING": "WEIGHTLIFTING"
+};
+
+const { WorkoutSession, MoveVariation, Move, Wod, Movement } = initSchema(schema);
 
 export {
   WorkoutSession,
-  Wod,
   MoveVariation,
   Move,
+  Wod,
   WodType,
-  Modality,
-  Priority,
-  Scheme,
-  Group,
   ModalityWeighted,
+  Group,
+  Scheme,
+  Priority,
+  Modality,
   Movement
 };

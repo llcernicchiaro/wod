@@ -55,22 +55,21 @@ export const MoveSelect = ({
     sequenceArray[i] = value;
     onChangeMove(sequenceArray, 'sequence', index);
   };
-  console.log(move?.modality === 'WEIGHTLIFTING', move?.modality);
+
   return (
     <Stack spacing={2}>
-      <Stack spacing={2} direction="row" width="100%">
+      <Stack spacing={4} direction="row">
         {!isHeavyDay && (
           <TextField
             variant="standard"
-            size="small"
-            placeholder="Reps/Distance/Max"
+            label="Reps/Distance"
+            placeholder="Reps/Distance"
             value={move?.repetitions || ''}
             onChange={(e) => onChangeMove(e.target.value, 'repetitions', index)}
-            sx={{ minWidth: 140 }}
+            sx={{ width: 100 }}
           />
         )}
         <Autocomplete
-          size="small"
           getOptionLabel={(option) => option.name || ''}
           isOptionEqualToValue={(option, value) => option.id === value.id}
           options={moves}
@@ -82,14 +81,13 @@ export const MoveSelect = ({
             <TextField
               {...params}
               variant="standard"
-              size="small"
               placeholder="Movement"
+              label="Movement"
             />
           )}
         />
         {variationOptions.length > 0 && (
           <Autocomplete
-            size="small"
             getOptionLabel={(option) => option.name || ''}
             isOptionEqualToValue={(option, value) => option.id === value.id}
             options={variationOptions}
@@ -104,8 +102,8 @@ export const MoveSelect = ({
               <TextField
                 {...params}
                 variant="standard"
-                size="small"
                 placeholder="Variant"
+                label="Variant"
               />
             )}
           />
@@ -114,7 +112,6 @@ export const MoveSelect = ({
           <>
             <TextField
               variant="standard"
-              size="small"
               type="number"
               placeholder="Men(or General) Weight"
               label="Men(or General) Weight"
@@ -122,13 +119,12 @@ export const MoveSelect = ({
                 inputMode: 'numeric',
                 pattern: '[0-9]*'
               }}
-              sx={{ width: 80 }}
+              sx={{ width: 200 }}
               value={move?.menWeight || null}
               onChange={(e) => onChangeMove(e.target.value, 'menWeight', index)}
             />
             <TextField
               variant="standard"
-              size="small"
               type="number"
               placeholder="Women Weight"
               label="Women Weight"
@@ -136,7 +132,7 @@ export const MoveSelect = ({
                 inputMode: 'numeric',
                 pattern: '[0-9]*'
               }}
-              sx={{ width: 80 }}
+              sx={{ width: 150 }}
               value={move?.womenWeight || null}
               onChange={(e) =>
                 onChangeMove(e.target.value, 'womenWeight', index)
@@ -145,13 +141,12 @@ export const MoveSelect = ({
           </>
         )}
       </Stack>
-      <Stack direction="row">
-        {isHeavyDay &&
-          sequenceArray.map((s, i) => (
-            <div key={i}>
+      {isHeavyDay && (
+        <Stack direction="row" spacing={2}>
+          {sequenceArray.map((s, i) => (
+            <>
               <TextField
                 variant="standard"
-                size="small"
                 type="number"
                 inputProps={{
                   inputMode: 'numeric',
@@ -160,13 +155,19 @@ export const MoveSelect = ({
                 sx={{ width: 60 }}
                 value={s}
                 onChange={(e) => onChangeSequenceValue(e.target.value, i)}
+                key={i}
               />
               {i < 9 && <span> - </span>}
-            </div>
+            </>
           ))}
-      </Stack>
+        </Stack>
+      )}
       {itsLast && (
-        <Button type="button" variant="outlined" onClick={onAddMoreMoves}>
+        <Button
+          variant="contained"
+          onClick={onAddMoreMoves}
+          sx={{ width: 160 }}
+        >
           Add more moves
         </Button>
       )}

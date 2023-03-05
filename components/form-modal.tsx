@@ -12,9 +12,15 @@ import {
   Dialog,
   TextField,
   Box,
-  Stack
+  Stack,
+  Typography,
+  Tooltip,
+  IconButton,
+  Button
 } from '@mui/material';
 import { format } from 'date-fns';
+import { DataStore, Predicates, SortDirection } from 'aws-amplify';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import {
   Group,
   LazyMove,
@@ -27,8 +33,8 @@ import {
   WodType,
   WorkoutSession
 } from '../models';
-import { DataStore, Predicates, SortDirection } from 'aws-amplify';
 import { MoveSelect } from './move-select';
+import Divider from '@mui/material/Divider';
 
 // type TabValue = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 type TabValue = 0 | 1 | 2;
@@ -157,12 +163,12 @@ export function FormModal({
       switch (wodTypeEnum[selectedWodType]) {
         case 'FORTIME': {
           console.log('for time\n');
+          text = text.concat('', 'FOR TIME');
           if (group && group !== 'SOLO')
             text = text.concat(
               '\n',
               groupsOptions.find((g) => g.value === group)!.label
             );
-          text = text.concat('\n', 'FOR TIME');
           if (rounds > 1) text = text.concat('\n', `${rounds} ROUNDS`);
           const moveTexts = wodMoves
             .map((move) => {
@@ -176,7 +182,7 @@ export function FormModal({
                   );
                   moveName = variant?.name!;
                 }
-                let moveText = `${move.repetitions} ${moveName}`;
+                let moveText = `${move.repetitions || ''} ${moveName}`;
                 if (move.menWeight)
                   moveText = moveText.concat('(', move.menWeight.toString());
                 if (move.womenWeight)
@@ -196,7 +202,7 @@ export function FormModal({
         case 'AMRAP': {
           console.log('amrap\n');
           text = text.concat(
-            '\n',
+            '',
             `COMPLETE AS MANY REPS AS POSSIBLE IN ${timeCap}\' OF:`
           );
           const moveTexts = wodMoves
@@ -211,7 +217,7 @@ export function FormModal({
                   );
                   moveName = variant?.name!;
                 }
-                let moveText = `${move.repetitions} ${moveName}`;
+                let moveText = `${move.repetitions || ''} ${moveName}`;
                 if (move.menWeight)
                   moveText = moveText.concat('(', move.menWeight.toString());
                 if (move.womenWeight)
@@ -229,7 +235,7 @@ export function FormModal({
         }
         case 'HEAVYDAY': {
           console.log('heavy day\n');
-          text = text.concat('\n', 'FOR LOAD');
+          text = text.concat('', 'FOR LOAD');
           const moveTexts = wodMoves
             .map((move) => {
               let moveName = '';
@@ -414,8 +420,11 @@ export function FormModal({
       fullWidth
       PaperProps={{ sx: { flexDirection: 'row' } }}
     >
-      <Box width="80%">
-        WOD - {format(date, 'EEEE - dd/MM')}
+      <Box width="80%" p={2}>
+        <Stack direction="row" spacing={2} mb={2}>
+          <Typography variant="h5">{format(date, 'EEEE - dd/MM')}</Typography>
+        </Stack>
+        <Divider />
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tabs
             value={selectedWodType}
@@ -428,12 +437,11 @@ export function FormModal({
         </Box>
         <TabPanel value={selectedWodType} index={0}>
           <Stack spacing={2}>
-            <Stack direction="row" spacing={2}>
+            <Stack direction="row" spacing={4}>
               {/* <FormGroup>
                 <FormControlLabel
                   control={
                     <Switch
-                      size="small"
                       checked={isSequence}
                       onChange={(e) => setIsSequence(e.target.checked)}
                     />
@@ -445,7 +453,6 @@ export function FormModal({
               {/* {!isSequence && ( */}
               <TextField
                 variant="standard"
-                size="small"
                 type="number"
                 placeholder="Rounds"
                 label="Rounds"
@@ -453,13 +460,48 @@ export function FormModal({
                   inputMode: 'numeric',
                   pattern: '[0-9]*'
                 }}
-                sx={{ width: 80 }}
+                sx={{ width: 100 }}
                 value={rounds}
                 onChange={(e) => setRounds(Number(e.target.value))}
               />
               {/* )} */}
+              <Autocomplete
+                disableClearable
+                options={groupsOptions}
+                value={groupsOptions.find((g) => g.value === group)}
+                onChange={(_e, newValue) => setGroup(newValue?.value!)}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant="standard"
+                    placeholder="Group"
+                    label="Group"
+                    sx={{ width: 200 }}
+                  />
+                )}
+              />
+              <TextField
+                variant="standard"
+                type="number"
+                placeholder="Time Cap"
+                label="Time Cap"
+                inputProps={{
+                  inputMode: 'numeric',
+                  pattern: '[0-9]*'
+                }}
+                sx={{ width: 100 }}
+                value={timeCap}
+                onChange={(e) => setTimeCap(e.target.value)}
+              />
+              <TextField
+                variant="standard"
+                placeholder="Extra comment (Use for strategy or something else)"
+                label="Extra Comment"
+                onChange={(e) => setComment(e.target.value)}
+                sx={{ width: 400 }}
+              />
             </Stack>
-
+            <Typography>Movements List</Typography>
             {wodMoves.map((move, index) => (
               <MoveSelect
                 key={index}
@@ -473,63 +515,33 @@ export function FormModal({
                 itsLast={index === wodMoves.length - 1}
               />
             ))}
-
-            <Autocomplete
-              size="small"
-              options={groupsOptions}
-              value={groupsOptions.find((g) => g.value === group) || null}
-              onChange={(_e, newValue) => setGroup(newValue?.value!)}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant="standard"
-                  size="small"
-                  placeholder="Group"
-                  label="Group"
-                />
-              )}
-            />
-
-            <TextField
-              variant="standard"
-              size="small"
-              type="number"
-              placeholder="Time Cap"
-              label="Time Cap"
-              inputProps={{
-                inputMode: 'numeric',
-                pattern: '[0-9]*'
-              }}
-              sx={{ width: 80 }}
-              value={timeCap}
-              onChange={(e) => setTimeCap(e.target.value)}
-            />
-
-            <TextField
-              variant="standard"
-              size="small"
-              placeholder="Extra comment (Use for strategy or something else)"
-              label="Extra Comment"
-              onChange={(e) => setComment(e.target.value)}
-            />
           </Stack>
         </TabPanel>
         <TabPanel value={selectedWodType} index={1}>
           <Stack spacing={2}>
-            <TextField
-              variant="standard"
-              size="small"
-              type="number"
-              placeholder="Time Cap"
-              label="Time Cap"
-              inputProps={{
-                inputMode: 'numeric',
-                pattern: '[0-9]*'
-              }}
-              sx={{ width: 80 }}
-              value={timeCap}
-              onChange={(e) => setTimeCap(e.target.value)}
-            />
+            <Stack direction="row" spacing={4}>
+              <TextField
+                variant="standard"
+                type="number"
+                placeholder="Time Cap"
+                label="Time Cap"
+                inputProps={{
+                  inputMode: 'numeric',
+                  pattern: '[0-9]*'
+                }}
+                sx={{ width: 100 }}
+                value={timeCap}
+                onChange={(e) => setTimeCap(e.target.value)}
+              />
+              <TextField
+                variant="standard"
+                placeholder="Extra comment (Use for strategy or something else)"
+                label="Extra Comment"
+                onChange={(e) => setComment(e.target.value)}
+                sx={{ width: 400 }}
+              />
+            </Stack>
+            <Typography>Movements List</Typography>
             {wodMoves.map((move, index) => (
               <MoveSelect
                 key={index}
@@ -543,17 +555,33 @@ export function FormModal({
                 itsLast={index === wodMoves.length - 1}
               />
             ))}
-            <TextField
-              variant="standard"
-              size="small"
-              placeholder="Extra comment (Use for strategy or something else)"
-              label="Extra Comment"
-              onChange={(e) => setComment(e.target.value)}
-            />
           </Stack>
         </TabPanel>
         <TabPanel value={selectedWodType} index={2}>
           <Stack spacing={2}>
+            <Stack direction="row" spacing={4}>
+              <TextField
+                variant="standard"
+                type="number"
+                placeholder="Time Cap"
+                label="Time Cap"
+                inputProps={{
+                  inputMode: 'numeric',
+                  pattern: '[0-9]*'
+                }}
+                sx={{ width: 100 }}
+                value={timeCap}
+                onChange={(e) => setTimeCap(e.target.value)}
+              />
+              <TextField
+                variant="standard"
+                placeholder="Extra comment (Use for strategy or something else)"
+                label="Extra Comment"
+                onChange={(e) => setComment(e.target.value)}
+                sx={{ width: 400 }}
+              />
+            </Stack>
+            <Typography>Movements List</Typography>
             {wodMoves.map((move, index) => (
               <MoveSelect
                 // isSequence
@@ -567,34 +595,33 @@ export function FormModal({
                 itsLast={index === wodMoves.length - 1}
               />
             ))}
-
-            <TextField
-              variant="standard"
-              size="small"
-              type="number"
-              placeholder="Time Cap"
-              label="Time Cap"
-              inputProps={{
-                inputMode: 'numeric',
-                pattern: '[0-9]*'
-              }}
-              sx={{ width: 80 }}
-              value={timeCap}
-              onChange={(e) => setTimeCap(e.target.value)}
-            />
-            <TextField
-              variant="standard"
-              size="small"
-              placeholder="Extra comment (Use for strategy or something else)"
-              label="Extra Comment"
-              onChange={(e) => setComment(e.target.value)}
-            />
           </Stack>
         </TabPanel>
+        <Button variant="contained" onClick={handleClose}>
+          Fechar
+        </Button>
       </Box>
-      <Box width="20%" sx={{ backgroundColor: '#e5e5e5' }}>
-        <p>Wod Preview</p>
-        <p style={{ whiteSpace: 'pre-line' }}>{workoutText}</p>
+      <Box width="20%" p={2} sx={{ backgroundColor: 'primary.main' }}>
+        <Stack spacing={2} divider={<Divider flexItem />}>
+          <Typography variant="h6">Wod Preview</Typography>
+          <Stack
+            spacing={2}
+            direction="row"
+            justifyContent="space-between"
+            alignItems="start"
+          >
+            <Typography sx={{ whiteSpace: 'pre-line' }}>
+              {workoutText}
+            </Typography>
+            <Tooltip title="Copy Wod Text">
+              <IconButton
+                onClick={() => navigator.clipboard.writeText(workoutText)}
+              >
+                <ContentCopyIcon />
+              </IconButton>
+            </Tooltip>
+          </Stack>
+        </Stack>
       </Box>
     </Dialog>
   );
