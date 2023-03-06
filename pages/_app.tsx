@@ -12,8 +12,7 @@ import theme from '../theme/theme';
 
 Amplify.configure(awsExports);
 
-function App({ Component, pageProps, user }: AppProps) {
-  console.log(user);
+function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
