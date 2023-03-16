@@ -16,13 +16,5 @@
         "wod": {}
       }
     }
-  },
-  "prod": {
-    "awscloudformation": {},
-    "categories": {
-      "auth": {
-        "wod": {}
-      }
-    }
   }
 }
