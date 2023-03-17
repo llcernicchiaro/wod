@@ -1,8 +1,7 @@
-import { IconButton, TextField, Typography } from '@mui/material';
+import { Box, IconButton, TextField, Typography } from '@mui/material';
 import { Wod, WorkoutSession } from '../models';
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
-import { Box } from '@mui/system';
 import { useEffect, useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 import { DataStore } from 'aws-amplify';
