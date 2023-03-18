@@ -16,6 +16,8 @@ import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import { ActiveLink } from './active-link';
 import { Auth, DataStore } from 'aws-amplify';
+import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -60,6 +62,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function SearchAppBar() {
+  const router = useRouter();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const handleClose = () => {
@@ -71,6 +74,7 @@ export default function SearchAppBar() {
     try {
       await DataStore.clear();
       await Auth.signOut();
+      router.push('/');
     } catch (error) {
       console.log('error signing out: ', error);
     }
@@ -86,7 +90,7 @@ export default function SearchAppBar() {
         <Container maxWidth="xl">
           <Toolbar>
             <Typography variant="h4" flexGrow="1">
-              WOD
+              <Link href="/">WOD</Link>
             </Typography>
             <Stack direction="row" spacing={3} alignItems="center">
               <Typography variant="h6">

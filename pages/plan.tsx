@@ -4,7 +4,7 @@ import { styled } from '@mui/material/styles';
 import { Cell } from '../components/cell';
 import { WeekPicker } from '../components/week-picker';
 import { add, endOfWeek, format, startOfWeek } from 'date-fns';
-import { DataStore } from 'aws-amplify';
+import { DataStore, Hub } from 'aws-amplify';
 import { LazyWod, LazyWorkoutSession, Wod, WorkoutSession } from '../models';
 import { FormModal } from '../components/form-modal';
 
@@ -54,13 +54,36 @@ export default function Plan() {
   const fetchWorkouts = useCallback(async () => {
     const start = startOfWeek(date).toISOString();
     const end = endOfWeek(date).toISOString();
-
+    await DataStore.start();
     const workouts = await DataStore.query(WorkoutSession, (w) =>
       w.date.between(start, end)
     );
 
+    console.log(start, end, workouts);
     setWorkouts(workouts);
   }, [date]);
+
+  useEffect(() => {
+    // Create listener that will stop observing the model once the sync process is done
+    const removeListener = Hub.listen('datastore', async (capsule) => {
+      const {
+        payload: { event, data }
+      } = capsule;
+
+      console.log('DataStore event', event, data);
+
+      if (event === 'ready') {
+        fetchWorkouts();
+      }
+    });
+
+    // Start the DataStore, this kicks-off the sync process.
+    DataStore.start();
+
+    return () => {
+      removeListener();
+    };
+  }, [fetchWorkouts]);
 
   useEffect(() => {
     fetchWorkouts();

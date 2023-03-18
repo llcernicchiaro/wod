@@ -72,7 +72,11 @@ export const MoveSelect = ({
         <Autocomplete
           getOptionLabel={(option) => option.name || ''}
           isOptionEqualToValue={(option, value) => option.id === value.id}
-          options={moves}
+          options={
+            isHeavyDay
+              ? moves.filter((m) => m.modality === 'WEIGHTLIFTING')
+              : moves
+          }
           sx={{ minWidth: 200 }}
           value={moves.find((m) => m.id === move?.moveId) || null}
           groupBy={(option) => option.modality as string}

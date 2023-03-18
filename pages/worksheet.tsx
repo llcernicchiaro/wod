@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import { WeekPicker } from '../components/week-picker';
 import { Modality, Move, Wod, WorkoutSession } from '../models';
-import { DataStore } from 'aws-amplify';
+import { DataStore, Hub } from 'aws-amplify';
 
 type Column = {
   id: 'name' | 'code' | 'population' | 'size' | 'density' | string;
@@ -174,20 +174,20 @@ export async function getServerSideProps() {
       value: weightlifting[0]?.id || ''
     },
     ...weightlifting.slice(1).map((g, i) => ({
-      id: 23 + gymnastics.length + i,
+      id: 24 + gymnastics.length + i,
       group: 'Movements - Weightlifting',
       name: g.name || '',
       value: g.id || ''
     })),
     {
-      id: 23 + gymnastics.length + weightlifting.length,
+      id: 25 + gymnastics.length + weightlifting.length,
       group: 'Movements - Monostructural',
       groupSize: monostructural.length,
       name: monostructural[0]?.name || '',
       value: monostructural[0]?.id || ''
     },
     ...monostructural.slice(1).map((g, i) => ({
-      id: 25 + gymnastics.length + weightlifting.length + i,
+      id: 26 + gymnastics.length + weightlifting.length + i,
       group: 'Movements - Monostructural',
       name: g.name || '',
       value: g.id || ''
@@ -231,6 +231,28 @@ export default function Worksheet({ categories }: Props) {
 
     setWorkouts(wodsArray);
   }, [date]);
+
+  useEffect(() => {
+    // Create listener that will stop observing the model once the sync process is done
+    const removeListener = Hub.listen('datastore', async (capsule) => {
+      const {
+        payload: { event, data }
+      } = capsule;
+
+      console.log('DataStore event', event, data);
+
+      if (event === 'ready') {
+        fetchWorkouts();
+      }
+    });
+
+    // Start the DataStore, this kicks-off the sync process.
+    DataStore.start();
+
+    return () => {
+      removeListener();
+    };
+  }, [fetchWorkouts]);
 
   useEffect(() => {
     fetchWorkouts();
