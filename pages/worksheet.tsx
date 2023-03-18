@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import { WeekPicker } from '../components/week-picker';
 import { Modality, Move, Wod, WorkoutSession } from '../models';
-import { DataStore, Hub } from 'aws-amplify';
+import { DataStore, Hub, SortDirection } from 'aws-amplify';
 
 type Column = {
   id: 'name' | 'code' | 'population' | 'size' | 'density' | string;
@@ -45,14 +45,26 @@ function getDates(startDate: Date, stopDate: Date) {
 }
 
 export async function getServerSideProps() {
-  const gymnastics = await DataStore.query(Move, (m) =>
-    m.modality.eq('GYMNASTICS')
+  const gymnastics = await DataStore.query(
+    Move,
+    (m) => m.modality.eq('GYMNASTICS'),
+    {
+      sort: (m) => m.name(SortDirection.ASCENDING)
+    }
   );
-  const weightlifting = await DataStore.query(Move, (m) =>
-    m.modality.eq('WEIGHTLIFTING')
+  const weightlifting = await DataStore.query(
+    Move,
+    (m) => m.modality.eq('WEIGHTLIFTING'),
+    {
+      sort: (m) => m.name(SortDirection.ASCENDING)
+    }
   );
-  const monostructural = await DataStore.query(Move, (m) =>
-    m.modality.eq('MONOSTRUCTURAL')
+  const monostructural = await DataStore.query(
+    Move,
+    (m) => m.modality.eq('MONOSTRUCTURAL'),
+    {
+      sort: (m) => m.name(SortDirection.ASCENDING)
+    }
   );
 
   const categories: Category[] = [

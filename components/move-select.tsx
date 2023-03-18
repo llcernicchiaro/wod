@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Autocomplete, Button, TextField, Stack } from '@mui/material';
 import { LazyMove, Move, Movement, MoveVariation } from '../models';
-import { DataStore } from 'aws-amplify';
+import { DataStore, SortDirection } from 'aws-amplify';
 
 type Props = {
   moves: Move[];
@@ -41,8 +41,12 @@ export const MoveSelect = ({
   useEffect(() => {
     const getVariants = async () => {
       if (move) {
-        const variants = await DataStore.query(MoveVariation, (m) =>
-          m.moveID.eq(move.moveId!)
+        const variants = await DataStore.query(
+          MoveVariation,
+          (m) => m.moveID.eq(move.moveId!),
+          {
+            sort: (m) => m.name(SortDirection.ASCENDING)
+          }
         );
         if (!!variants) setVariationOptions(variants);
       }
@@ -70,6 +74,7 @@ export const MoveSelect = ({
           />
         )}
         <Autocomplete
+          disableClearable
           getOptionLabel={(option) => option.name || ''}
           isOptionEqualToValue={(option, value) => option.id === value.id}
           options={
@@ -92,6 +97,7 @@ export const MoveSelect = ({
         />
         {variationOptions.length > 0 && (
           <Autocomplete
+            disableClearable
             getOptionLabel={(option) => option.name || ''}
             isOptionEqualToValue={(option, value) => option.id === value.id}
             options={variationOptions}

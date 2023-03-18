@@ -174,13 +174,13 @@ export function FormModal({
             .map((move) => {
               let moveName = '';
               const movement = moveOptions.find((m) => m.id === move.moveId!);
-              if (movement) {
-                moveName = movement?.name!;
+              if (movement && movement.name) {
+                moveName = movement?.name;
                 if (move.variationId) {
                   const variant = allVariants.find(
                     (v) => v.id === move.variationId
                   );
-                  moveName = variant?.name!;
+                  moveName = variant?.name;
                 }
                 let moveText = `${move.repetitions || ''} ${moveName}`;
                 if (move.menWeight)
@@ -209,13 +209,13 @@ export function FormModal({
             .map((move) => {
               let moveName = '';
               const movement = moveOptions.find((m) => m.id === move.moveId!);
-              if (movement) {
-                moveName = movement?.name!;
+              if (movement && movement.name) {
+                moveName = movement?.name || "";
                 if (move.variationId) {
                   const variant = allVariants.find(
                     (v) => v.id === move.variationId
                   );
-                  moveName = variant?.name!;
+                  moveName = variant?.name || "";
                 }
                 let moveText = `${move.repetitions || ''} ${moveName}`;
                 if (move.menWeight)
@@ -240,13 +240,13 @@ export function FormModal({
             .map((move) => {
               let moveName = '';
               const movement = moveOptions.find((m) => m.id === move.moveId!);
-              if (movement) {
-                moveName = movement?.name!;
+              if (movement && movement.name) {
+                moveName = movement?.name || "";
                 if (move.variationId) {
                   const variant = allVariants.find(
                     (v) => v.id === move.variationId
                   );
-                  moveName = variant?.name!;
+                  moveName = variant?.name || "";
                 }
                 let moveText = moveName.concat(
                   '\n',
