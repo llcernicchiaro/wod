@@ -180,7 +180,7 @@ export function FormModal({
                   const variant = allVariants.find(
                     (v) => v.id === move.variationId
                   );
-                  moveName = variant?.name;
+                  moveName = variant?.name || "";
                 }
                 let moveText = `${move.repetitions || ''} ${moveName}`;
                 if (move.menWeight)
