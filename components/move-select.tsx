@@ -83,7 +83,7 @@ export const MoveSelect = ({
               : moves
           }
           sx={{ minWidth: 200 }}
-          value={moves.find((m) => m.id === move?.moveId) || null}
+          value={moves.find((m) => m.id === move?.moveId) || undefined}
           groupBy={(option) => option.modality as string}
           onChange={(_e, newValue) => onChangeMove(newValue!, 'moveId', index)}
           renderInput={(params) => (
@@ -103,7 +103,7 @@ export const MoveSelect = ({
             options={variationOptions}
             sx={{ minWidth: 200 }}
             value={
-              variationOptions.find((v) => v.id === move?.variationId) || null
+              variationOptions.find((v) => v.id === move?.variationId) || undefined
             }
             onChange={(_e, newValue) =>
               onChangeMove(newValue?.id!, 'variationId', index)
